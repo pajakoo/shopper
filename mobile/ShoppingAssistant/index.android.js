@@ -5,113 +5,89 @@
  */
 
 import React, { Component } from 'react';
+//import api from './Utils/api'
+import FBSDK from 'react-native-fbsdk';
 
 import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  ListView
 } from 'react-native';
 
-import MapView from 'react-native-maps';
 
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  map: {
-    ...StyleSheet.absoluteFillObject,
-  },
-});
+const {
+  LoginButton,
+} = FBSDK;
+
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 export default class ShoppingAssistant extends Component {
 
-  state = {
-    initialPosition: {
-      latitude: 0,
-      longitude: 0,
-      latitudeDelta: 0,
-      longitudeDelta: 0
-    },
-    lastPosition: {
-      latitude: 0,
-      longitude: 0,
-      latitudeDelta: 0,
-      longitudeDelta: 0
-    },
-    region: {
-      latitude: 0,
-      longitude: 0,
-      latitudeDelta: 0,
-      longitudeDelta: 0
-    },
-  };
-
-  watchID: ?number = null;
-
-  constructor(props){
-    super(props);
-
-    this.onRegionChange = this.onRegionChange.bind(this);
+  constructor(){
+    super();
+    this.state = {
+      dataSource: ds.cloneWithRows([])
+    }
   }
 
-  componentDidMount() {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        var initialPosition = position;
-        this.setState({region:initialPosition});
-        this.setState({initialPosition});
-      },
-      (error) => alert(JSON.stringify(error)),
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}  //true
-    );
-    this.watchID = navigator.geolocation.watchPosition((position) => {
-      console.log('watchID',position)
-      var lastPosition = JSON.stringify(position);
-      this.setState({region:lastPosition});
 
-      this.setState({lastPosition});
+  componentWillMount(){
+return
+    api.getData().then( (res) => {
+      console.log(res);
+      this.state = {
+        dataSource: ds.cloneWithRows(res)
+      };
+
+    }).catch((error) => {
+      console.log("Api call error", error.message);
+      alert(error.message);
     });
   }
 
-  componentWillUnmount() {
-    navigator.geolocation.clearWatch(this.watchID);
-  }
-
-  onRegionChange(region) {
-    this.setState({lastPosition:region});
-    this.setState({region:region});
-    //console.log('watchID2',this.state.lastPosition)
-  }
-
   render() {
-    const {region} = this.state;
-    console.log('3',this.state.initialPosition,'watchID2',this.state.lastPosition,);
+
     return (
-      <View style ={styles.container}>
-        <MapView
-          style={styles.map}
-          onRegionChange={this.onRegionChange}
-          showsUserLocation={true}
-          followUserLocation={true}
-          //region={region}
-        >
-        </MapView>
-        <Text>
-          <Text style={styles.title}>Initial position: </Text>
-          {this.state.lastPosition.latitude}
-          {this.state.initialPosition.latitude}
-        </Text>
-        <Text>
-          <Text style={styles.title}>Current position: </Text>
-          {this.state.lastPosition.longitude}
-          {this.state.initialPosition.longitude}
-        </Text>
+      <View style={{flex:1}}>
+        <LoginButton
+          publishPermissions={["publish_actions"]}
+          onLoginFinished={
+            (error, result) => {
+              if (error) {
+                alert("Login failed with error: " + result.error);
+              } else if (result.isCancelled) {
+                alert("Login was cancelled");
+              } else {
+                alert("Login was successful with permissions: " + result.grantedPermissions)
+              }
+            }
+          }
+          onLogoutFinished={() => alert("User logged out")}/>
       </View>
+
     );
   }
 }
+
+const styles = StyleSheet.create({
+  view: {
+    padding:50
+  },
+  list: {
+    flex: 1,
+    padding: 30,
+    backgroundColor: 'rgb(39, 174, 96)'
+  },
+  text: {
+    fontSize: 20,
+    color: 'white'
+  }
+
+})
+
+
+
 
 AppRegistry.registerComponent('ShoppingAssistant', () => ShoppingAssistant);

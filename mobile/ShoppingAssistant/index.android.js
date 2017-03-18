@@ -10,12 +10,9 @@ import FBSDK from 'react-native-fbsdk';
 
 import {
   AppRegistry,
-  StyleSheet,
-  Text,
   View,
   ListView
 } from 'react-native';
-
 
 const {
   LoginButton,
@@ -29,13 +26,11 @@ export default class ShoppingAssistant extends Component {
     super();
     this.state = {
       dataSource: ds.cloneWithRows([])
-    }
+    };
   }
 
-
   componentWillMount(){
-return
-    api.getData().then( (res) => {
+/*    api.getData().then( (res) => {
       console.log(res);
       this.state = {
         dataSource: ds.cloneWithRows(res)
@@ -44,7 +39,7 @@ return
     }).catch((error) => {
       console.log("Api call error", error.message);
       alert(error.message);
-    });
+    });*/
   }
 
   render() {
@@ -60,7 +55,7 @@ return
               } else if (result.isCancelled) {
                 alert("Login was cancelled");
               } else {
-                alert("Login was successful with permissions: " + result.grantedPermissions)
+                alert("Login was successful with permissions: " + result.grantedPermissions);
               }
             }
           }
@@ -70,24 +65,5 @@ return
     );
   }
 }
-
-const styles = StyleSheet.create({
-  view: {
-    padding:50
-  },
-  list: {
-    flex: 1,
-    padding: 30,
-    backgroundColor: 'rgb(39, 174, 96)'
-  },
-  text: {
-    fontSize: 20,
-    color: 'white'
-  }
-
-})
-
-
-
 
 AppRegistry.registerComponent('ShoppingAssistant', () => ShoppingAssistant);

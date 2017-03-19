@@ -5,49 +5,65 @@
  */
 
 import React, { Component } from 'react';
+//import api from './Utils/api'
+import FBSDK from 'react-native-fbsdk';
+
 import {
   AppRegistry,
-  StyleSheet,
-  Text,
-  View
+  View,
+  ListView
 } from 'react-native';
 
+const {
+  LoginButton,
+} = FBSDK;
+
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
 export default class ShoppingAssistant extends Component {
+
+  constructor(){
+    super();
+    this.state = {
+      dataSource: ds.cloneWithRows([])
+    };
+  }
+
+  componentWillMount(){
+    /*    api.getData().then( (res) => {
+     console.log(res);
+     this.state = {
+     dataSource: ds.cloneWithRows(res)
+     };
+
+     }).catch((error) => {
+     console.log("Api call error", error.message);
+     alert(error.message);
+     });*/
+  }
+
   render() {
+
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
+      <View style={{flex:1}}>
+        <LoginButton
+          publishPermissions={["publish_actions"]}
+          onLoginFinished={
+            (error, result) => {
+              if (error) {
+                alert("Login failed with error: " + result.error);
+              } else if (result.isCancelled) {
+                alert("Login was cancelled");
+              } else {
+                alert("Login was successful with permissions: " + result.grantedPermissions);
+              }
+            }
+          }
+          onLogoutFinished={() => alert("User logged out")}/>
       </View>
+
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
 
 AppRegistry.registerComponent('ShoppingAssistant', () => ShoppingAssistant);

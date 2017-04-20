@@ -36,6 +36,7 @@ module.exports = {
   },
 
   "rules": {
+    "semi": ["error", "never"],
     "strict": ["error", "global"],
     "no-unused-vars": ["error", { "vars": "all", "args": "all", "caughtErrors": "none" }],
     "no-console": ["error", { allow: ["warn", "error"] }],
@@ -44,7 +45,7 @@ module.exports = {
     "arrow-spacing": "error",
     "arrow-parens": ["error", "always"],
     "arrow-body-style": ["error", "as-needed"],
-    "semi": ["error", "always"],
+    // "semi": ["error", "always"],
     "no-confusing-arrow": ["error", { "allowParens": false }],
     "no-constant-condition": "error",
     "no-labels": "error",

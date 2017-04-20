@@ -7,12 +7,52 @@
   <title>ShoppingAssistant</title>
   <link rel="shortcut icon" href="/images/favicon.ico">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyBytrJ4u_ibVs40zvTJZkaNCqsCmho3b2E"
+          type="text/javascript"></script>
+
+
+  <style>
+    /* Always set the map height explicitly to define the size of the div
+     * element that contains the map. */
+    /* Optional: Makes the sample page fill the window. */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    #app {
+      height: 100%;
+      position: relative;
+      width:50%;
+      margin: 0 auto;
+    }
+
+    @media only screen and (max-width: 760px) {
+      #app{
+        width:100%;
+      }
+    }
+
+    #app > div{
+      height: 100%;
+
+    }
+    #app > div > div{
+      height: 100%;
+    }
+
+  </style>
+
 </head>
 <body>
 
 <div id="app"></div>
-<div>Hello world</div>
 <script src="/js/vendor.bundle.js"></script>
 <script src="/js/application.js"></script>
 </body>
 </html>
+
+
+
+
+<!--GOOOGLE API_KEY=AIzaSyBytrJ4u_ibVs40zvTJZkaNCqsCmho3b2E-->

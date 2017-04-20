@@ -14,8 +14,8 @@ const compiler = webpack(config);
 // Apply CLI dashboard for your webpack dev server
 compiler.apply(new DashboardPlugin());
 
-const host = process.env.HOST || 'localhost';
-const port = process.env.PORT || 3000;
+const host = process.env.HOST || '10.10.0.119';
+const port = process.env.PORT || 8888;
 
 function log() {
   arguments[0] = '\nWebpack: ' + arguments[0];

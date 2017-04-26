@@ -2,28 +2,26 @@ import React, {Component} from 'react'
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-
 import Drawer from 'material-ui/Drawer'
 import MenuItem from 'material-ui/MenuItem'
 import Divider from 'material-ui/Divider'
-
-import {List, ListItem} from 'material-ui/List';
-import ListIcon from 'material-ui/svg-icons/action/list';
-import IconButton from 'material-ui/IconButton';
-
+import {ListItem} from 'material-ui/List'
+import IconButton from 'material-ui/IconButton'
 import Toggle from 'material-ui/Toggle'
 import IconMenu from 'material-ui/IconMenu'
 import AppBar from 'material-ui/AppBar'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Menu from 'material-ui/svg-icons/navigation/menu'
-
-import { push } from 'react-router-redux';
-import { browserHistory } from 'react-router'
-
+import {browserHistory} from 'react-router'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
-
 import FlatButton from 'material-ui/FlatButton'
+import ContentAdd from 'material-ui/svg-icons/content/add'
+import Notifier from '../../components/notification/index'
+import {DIALOG_TYPES} from '../../features/dialog/index'
+import SavedLists from "../SavedLists/index"
 
+// https://reacttraining.com/react-router/web/api/matchPath
+// onClick={(e)=>console.log(e.latLng.lat(), e.latLng.lat())}
 class LoginButton extends Component {
   static muiName = 'FlatButton';
 
@@ -36,15 +34,17 @@ class LoginButton extends Component {
 
 const Logged = (props) => (
   <IconMenu
-    {...props}
     iconButtonElement={
       <IconButton><MoreVertIcon /></IconButton>
     }
     targetOrigin={{horizontal: 'right', vertical: 'top'}}
     anchorOrigin={{horizontal: 'right', vertical: 'top'}}
   >
-    <MenuItem primaryText="Delete"/>
+    <MenuItem primaryText="Delete" onTouchTap={ () => {
+      props.handleOpen(DIALOG_TYPES.DELETE)
+    }}/>
     <MenuItem primaryText="Rename"/>
+    <MenuItem primaryText="Time remainder"/>
     <MenuItem onClick={ () => browserHistory.push('/map') }>Location Remainder</MenuItem>
     <MenuItem primaryText="Sign out"/>
   </IconMenu>
@@ -53,11 +53,13 @@ const Logged = (props) => (
 Logged.muiName = 'IconMenu'
 
 export default class Sidebar extends React.Component {
+
   constructor(props) {
     super(props)
     this.state = {
       open: false,
-      logged: false
+      logged: false,
+      lastButtonClicked: null
     }
   }
 
@@ -84,7 +86,9 @@ export default class Sidebar extends React.Component {
                     this.state.open ?
                       <IconButton><NavigationClose /></IconButton> :
                       <IconButton><Menu  /> </IconButton>}
-                  iconElementRight={this.state.logged ? <Logged /> : <LoginButton />}
+                  iconElementRight={this.state.logged ?
+                    <Logged handleOpen={this.props.handleOpen.bind(this)}/> :
+                    <LoginButton />}
           />
           <Drawer
             onRequestChange={(open) => this.setState({open})}
@@ -96,22 +100,21 @@ export default class Sidebar extends React.Component {
 
             </div>
 
+            <Notifier />
             <ListItem onClick={ () => browserHistory.push('/users') }>Users</ListItem>
+
             <Divider />
-            <List>
-              <ListItem
-                primaryText="Lists"
-                leftIcon={<ListIcon />}
-                initiallyOpen={true}
-                primaryTogglesNestedList={true}
-                nestedItems={[
-                  <ListItem
-                    key={1}
-                    primaryText="LIDL"
-                  />
-                ]}
-              />
-            </List>
+            <ListItem
+              leftIcon={<ContentAdd />}
+              onClick={ () => {
+                this.handleToggle()
+                console.log(DIALOG_TYPES.CREATE)
+                this.props.handleOpen(DIALOG_TYPES.CREATE)
+                {/*this.setState({dialogType: 'create'})
+                this.setState({title: 'Create List'})*/}
+              }
+              }>Create New List</ListItem>
+            <SavedLists/>
           </Drawer>
         </div>
       </MuiThemeProvider>

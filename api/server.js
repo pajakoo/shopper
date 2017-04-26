@@ -9,7 +9,7 @@ var morgan     = require('morgan');
 var cors = require('cors');
 
 // use it before all route definitions
-app.use(cors({origin: 'http://10.10.0.119:8888'}))
+app.use(cors({origin: 'http://localhost:3000'}))
 
 // configure app
 app.use(morgan('dev')); // log requests to the console
@@ -27,7 +27,8 @@ mongoose.connect(url, function(err, db) {
 });
 
 // connect to our database
-var Bear     = require('./app/models/bear');
+var Users     = require('./app/models/user');
+var List     = require('./app/models/list');
 
 // ROUTES FOR OUR API
 // =============================================================================
@@ -47,77 +48,108 @@ router.get('/', function(req, res) {
 	res.json({ message: 'hooray! welcome to our api!' });
 });
 
-// on routes that end in /bears
+// on routes that end in /users
 // ----------------------------------------------------
-router.route('/bears')
+router.route('/users')
 
-	// create a bear (accessed at POST http://localhost:8080/bears)
+	// create a user (accessed at POST http://localhost:8080/users)
 	.post(function(req, res) {
 
     // Pass to next layer of middleware
-		var bear = new Bear();		// create a new instance of the Bear model
-		bear.name = req.body.name;  // set the bears name (comes from the request)
+		var user = new Users();		// create a new instance of the Users model
+		user.name = req.body.name;  // set the users name (comes from the request)
 
-		bear.save(function(err) {
+		user.save(function(err) {
 			if (err)
 				res.send(err);
 
-			res.json({ message: 'Bear created!' });
+			res.json({ message: 'Users created!' });
 		});
 	})
 
-	// get all the bears (accessed at GET http://localhost:8080/api/bears)
+	// get all the users (accessed at GET http://localhost:8080/api/users)
 	.get(function(req, res) {
-		Bear.find(function(err, bears) {
+		Users.find(function(err, users) {
 			if (err)
 				res.send(err);
 
-			res.json(bears);
+			res.json(users);
 		});
 	});
 
-// on routes that end in /bears/:bear_id
+// on routes that end in /users/:user_id
 // ----------------------------------------------------
-router.route('/bears/:bear_id')
+router.route('/users/:user_id')
 
-	// get the bear with that id
+	// get the user with that id
 	.get(function(req, res) {
-		Bear.findById(req.params.bear_id, function(err, bear) {
+		Users.findById(req.params.user_id, function(err, user) {
 			if (err)
 				res.send(err);
-			res.json(bear);
+			res.json(user);
 		});
 	})
 
-	// update the bear with this id
+	// update the user with this id
 	.put(function(req, res) {
-		Bear.findById(req.params.bear_id, function(err, bear) {
+		Users.findById(req.params.user_id, function(err, user) {
 
 			if (err)
 				res.send(err);
 
-			bear.name = req.body.name;
-			bear.save(function(err) {
+			user.name = req.body.name;
+			user.save(function(err) {
 				if (err)
 					res.send(err);
 
-				res.json({ message: 'Bear updated!' });
+				res.json({ message: 'Users updated!' });
 			});
 
 		});
 	})
 
-	// delete the bear with this id
+	// delete the user with this id
 	.delete(function(req, res) {
-		Bear.remove({
-			_id: req.params.bear_id
-		}, function(err, bear) {
+		Users.remove({
+			_id: req.params.user_id
+		}, function(err, user) {
 			if (err)
 				res.send(err);
-
 			res.json({ message: 'Successfully deleted' });
-		});
-	});
+		})
+	})
+
+  router.route('/lists/:list_id')
+  .delete(function (req, res) {
+    List.remove({
+      _id: req.params.list_id
+    }, function (err, list) {
+      if (err)
+        res.send(err);
+      res.json({message: 'Successfully deleted'});
+    })
+  })
+
+  router.route('/lists')
+  .post(function (req, res) {
+    var list = new List()
+    list.title = req.body.title;
+
+    list.save(function (err) {
+      if (err)
+        res.send(err)
+      res.json({message: 'LIST created!'});
+    })
+  })
+  .get(function(req, res) {
+    List.find(function(err, lists) {
+      if (err)
+        res.send(err);
+
+      res.json(lists);
+    });
+  });
+
 
 
 // REGISTER OUR ROUTES -------------------------------

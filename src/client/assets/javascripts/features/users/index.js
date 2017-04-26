@@ -21,16 +21,24 @@ export default class Users extends React.Component {
     this.setState({logged: logged})
   }
 
-  componentDidMount() {
-    axios.get('http://10.10.0.119:8080/api/bears', {
-      headers: {
-        'Accept': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      }
+  getPromiseData( x ){
+    return new Promise((resolve, reject) => {
+      Promise.all(x)
+        .then(res => {
+          return res.map(data => data.json())
+        })
+        .then(res => {
+          Promise.all(res).then(resolve)
+        }).catch(reject)
     })
-      .then((result) => {
-        this.setState({users: result.data})
-      })
+  }
+
+  componentDidMount() {
+
+    let users = [fetch('http://localhost:8080/api/users').catch((err) => console.log('fetf: ',err))]
+    this.getPromiseData(users).then( res => {
+      this.setState({users:res.reduce((a,b)=>[...a,...b],[]) })
+    })
 
   }
 

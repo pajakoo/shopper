@@ -1,3 +1,4 @@
+
 /* global google */
 import {
   default as React,
@@ -8,114 +9,117 @@ import {
   withGoogleMap,
   GoogleMap,
   Marker,
+  InfoWindow,
 } from "./lib";
 
-import SearchBox from "./lib/places/SearchBox";
-
-const INPUT_STYLE = {
-  boxSizing: `border-box`,
-  MozBoxSizing: `border-box`,
-  border: `1px solid transparent`,
-  width: `240px`,
-  height: `32px`,
-  marginTop: `27px`,
-  padding: `0 12px`,
-  borderRadius: `1px`,
-  boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-  fontSize: `14px`,
-  outline: `none`,
-  textOverflow: `ellipses`,
-};
-
-const SearchBoxExampleGoogleMap = withGoogleMap(props => (
+const ClosureListenersExampleGoogleMap = withGoogleMap(props => (
   <GoogleMap
-    ref={props.onMapMounted}
-    defaultZoom={15}
-    center={props.center}
-    onBoundsChanged={props.onBoundsChanged}
+    defaultZoom={4}
+    defaultCenter={new google.maps.LatLng(-25.363882, 131.044922)}
   >
-    <SearchBox
-      ref={props.onSearchBoxMounted}
-      bounds={props.bounds}
-      controlPosition={google.maps.ControlPosition.TOP_LEFT}
-      onPlacesChanged={props.onPlacesChanged}
-      inputPlaceholder="Customized your placeholder"
-      inputStyle={INPUT_STYLE}
-    />
-    {props.markers.map((marker, index) => (
-      <Marker position={marker.position} key={index} />
-    ))}
+    {props.markers.map((marker, index) => {
+      const onClick = () => props.onMarkerClick(marker);
+      const onCloseClick = () => props.onCloseClick(marker);
+
+      return (
+        <Marker
+          key={index}
+          position={marker.position}
+          title={(index + 1).toString()}
+          onClick={onClick}
+          draggable={true}
+
+        >
+          {marker.showInfo && (
+            <InfoWindow onCloseClick={onCloseClick}>
+              <div>
+                <strong>{marker.content}</strong>
+                <br />
+                <em>The contents of this InfoWindow are actually ReactElements.</em>
+              </div>
+            </InfoWindow>
+          )}
+        </Marker>
+      );
+    })}
   </GoogleMap>
 ));
 
+function generateInitialMarkers() {
+  const southWest = new google.maps.LatLng(-31.203405, 125.244141);
+  const northEast = new google.maps.LatLng(-25.363882, 131.044922);
+
+  const lngSpan = northEast.lng() - southWest.lng();
+  const latSpan = northEast.lat() - southWest.lat();
+
+  const markers = [];
+  for (let i = 0; i < 5; i++) {
+    const position = new google.maps.LatLng(
+      southWest.lat() + latSpan * Math.random(),
+      southWest.lng() + lngSpan * Math.random()
+    );
+    markers.push({
+      position,
+      content: `This is the secret message`.split(` `)[i],
+      showInfo: false,
+    });
+  }
+  return markers;
+}
+
 /*
- * https://developers.google.com/maps/documentation/javascript/examples/places-searchbox
+ * https://developers.google.com/maps/documentation/javascript/examples/event-closure
  *
  * Add <script src="https://maps.googleapis.com/maps/api/js"></script> to your HTML to provide google.maps reference
  */
-export default class SearchBoxExample extends Component {
+export default class ClosureListenersExample extends Component {
 
   state = {
-    bounds: null,
-    center: {
-      lat: 47.6205588,
-      lng: -122.3212725,
-    },
-    markers: [],
+    markers: generateInitialMarkers(),
   };
 
-  handleMapMounted = this.handleMapMounted.bind(this);
-  handleBoundsChanged = this.handleBoundsChanged.bind(this);
-  handleSearchBoxMounted = this.handleSearchBoxMounted.bind(this);
-  handlePlacesChanged = this.handlePlacesChanged.bind(this);
+  handleMarkerClick = this.handleMarkerClick.bind(this);
+  handleCloseClick = this.handleCloseClick.bind(this);
 
-  handleMapMounted(map) {
-    this._map = map;
-  }
-
-  handleBoundsChanged() {
+  handleMarkerClick(targetMarker) {
     this.setState({
-      bounds: this._map.getBounds(),
-      center: this._map.getCenter(),
+      markers: this.state.markers.map(marker => {
+        if (marker === targetMarker) {
+          return {
+            ...marker,
+            showInfo: true,
+          };
+        }
+        return marker;
+      }),
     });
   }
 
-  handleSearchBoxMounted(searchBox) {
-    this._searchBox = searchBox;
-  }
-
-  handlePlacesChanged() {
-    const places = this._searchBox.getPlaces();
-
-    // Add a marker for each place returned from search bar
-    const markers = places.map(place => ({
-      position: place.geometry.location,
-    }));
-
-    // Set markers; set map center to first search result
-    const mapCenter = markers.length > 0 ? markers[0].position : this.state.center;
-
+  handleCloseClick(targetMarker) {
     this.setState({
-      center: mapCenter,
-      markers,
+      markers: this.state.markers.map(marker => {
+        if (marker === targetMarker) {
+          return {
+            ...marker,
+            showInfo: false,
+          };
+        }
+        return marker;
+      }),
     });
   }
 
   render() {
     return (
-      <SearchBoxExampleGoogleMap
+      <ClosureListenersExampleGoogleMap
         containerElement={
           <div style={{ height: `100%` }} />
         }
         mapElement={
           <div style={{ height: `100%` }} />
         }
-        center={this.state.center}
-        onMapMounted={this.handleMapMounted}
-        onBoundsChanged={this.handleBoundsChanged}
-        onSearchBoxMounted={this.handleSearchBoxMounted}
-        bounds={this.state.bounds}
-        onPlacesChanged={this.handlePlacesChanged}
+        onMarkerClick={this.handleMarkerClick}
+        onCloseClick={this.handleCloseClick}
         markers={this.state.markers}
       />
     );

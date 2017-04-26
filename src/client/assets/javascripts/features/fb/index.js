@@ -1,5 +1,5 @@
 import React from 'react'
-
+import {browserHistory} from 'react-router'
 export default class Login extends React.Component {
 
   constructor(props) {
@@ -43,7 +43,17 @@ export default class Login extends React.Component {
             function (response) {
               if (response && !response.error) {
                 console.log('eek:',response)
-                fetch('http://localhost:8080/users/save/'+response.name).then((res) => console.log(res.json(), 'is saved'));
+                fetch("http://localhost:8080/api/users/",
+                  {
+                    headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json'
+                    },
+                    method: "POST",
+                    body: JSON.stringify({name:response.name})
+                  }).then((res) => {console.log(res.json(), 'is saved');browserHistory.push('/users')})
+
+                // fetch('http://0.0.0.0:8080/api/users/'+response.name).then((res) => console.log(res.json(), 'is saved'));
               }
             }
           );

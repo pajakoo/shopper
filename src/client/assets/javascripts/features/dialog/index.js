@@ -14,20 +14,26 @@ export default class DialogWindow extends Component {
     this.state = {
       dialogType: 'none',
       value: '',
-      openDialog: false
+      openDialog: false,
+      currentListName: '',
+      currentListId: '',
     }
 
-    this.handleChange = this.handleChange.bind(this);
+    this.loadLists = props.loadLists;
+    this.handleChange = this.handleChange.bind(this)
   }
 
-  handleOpen = (type) => {
+  handleOpen = (opt) => {
     this.setState({openDialog: true})
-    this.setState({dialogType: type})
-    if (type == DIALOG_TYPES.DELETE) {
+    this.setState({currentListName: opt.currentListName})
+    this.setState({currentListId: opt.currentListId})
+    this.setState({dialogType: opt.type})
+    if (opt.type == DIALOG_TYPES.DELETE) {
       this.setState({title: 'Delete List'})
-    } else if (type == DIALOG_TYPES.CREATE) {
+    } else if (opt.type == DIALOG_TYPES.CREATE) {
       this.setState({title: 'Create List'})
     }
+    window.modal = this
   };
 
   handleClose = () => {
@@ -60,15 +66,35 @@ export default class DialogWindow extends Component {
               method: "POST",
               body: JSON.stringify({title: this.state.value})
             }).then((res) => {
+            this.handleClose()
+            this.loadLists()
             console.log(res.json(), this.state.value, 'is saved')
           })
         }}
       />)
     } else if (this.state.dialogType == DIALOG_TYPES.DELETE) {
-      actions.unshift(<FlatButton
+      actions.push(<FlatButton
         label="Ok"
         primary={true}
-        onTouchTap={this.handleClose}
+        onTouchTap={() => {
+          fetch("http://localhost:8080/api/lists/" + this.state.currentListId,
+            {
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              method: "DELETE"
+            }).then((res) => {
+            this.handleClose()
+            this.loadLists()
+            console.log(res.json(), this.state.currentListName, 'is Deleted')
+            this.setState({currentListName: ''}, function () {
+              console.log('changed:', this)
+            })
+            this.setState({currentListId: ''})
+
+          })
+        }}
       />)
     }
 
@@ -87,9 +113,9 @@ export default class DialogWindow extends Component {
               onChange={this.handleChange}
             />)
           case DIALOG_TYPES.DELETE :
-            return <div>Confirm deletion</div>
+            return <div>Confirm deletion for {this.state.currentListName} list</div>
           default:
-            return null;
+            return null
         }
       })()}
 

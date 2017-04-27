@@ -59,7 +59,8 @@ export default class Sidebar extends React.Component {
     this.state = {
       open: false,
       logged: false,
-      lastButtonClicked: null
+      lastButtonClicked: null,
+      listName:''
     }
   }
 
@@ -68,6 +69,15 @@ export default class Sidebar extends React.Component {
   }
 
   handleToggle = () => this.setState({open: !this.state.open})
+
+  changeListItems(p) {
+    this.handleToggle()
+    this.setState({listName:p})
+  }
+
+  loadLists() {
+    this.sidebar.loadLists()
+  }
 
   render() {
     return (
@@ -81,7 +91,7 @@ export default class Sidebar extends React.Component {
             style={{margin: 20}}
           />
           <AppBar onLeftIconButtonTouchTap={this.handleToggle}
-                  title="List for LIDL"
+                  title={this.state.listName}
                   iconElementLeft={
                     this.state.open ?
                       <IconButton><NavigationClose /></IconButton> :
@@ -107,14 +117,15 @@ export default class Sidebar extends React.Component {
             <ListItem
               leftIcon={<ContentAdd />}
               onClick={ () => {
-                this.handleToggle()
-                console.log(DIALOG_TYPES.CREATE)
-                this.props.handleOpen(DIALOG_TYPES.CREATE)
-                {/*this.setState({dialogType: 'create'})
-                this.setState({title: 'Create List'})*/}
-              }
+                  this.handleToggle()
+                  this.props.handleOpen(DIALOG_TYPES.CREATE)
+                }
               }>Create New List</ListItem>
-            <SavedLists/>
+            <SavedLists
+              currentList={this.props.currentList}
+              ref={(sidebar) => {
+                this.sidebar = sidebar
+              }}/>
           </Drawer>
         </div>
       </MuiThemeProvider>

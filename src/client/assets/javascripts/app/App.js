@@ -11,22 +11,51 @@ export default class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      dialogType: 'none',
+      currentListName: '',
+      currentListId: ''
+
     }
   }
 
-  handleOpen(type) {
-    this.dialog.handleOpen(type)
+  handleOpen(t) {
+    this.dialog.handleOpen({
+      type: t,
+      currentListName:this.state.currentListName,
+      currentListId:this.state.currentListId })
+  }
+
+  loadLists() {
+    this.sidebar.loadLists()
+  }
+
+  currentList(p) {
+    this.setState({currentListName: p.title})
+    this.setState({currentListId: p.id})
+    this.sidebar.changeListItems(p.title)
   }
 
   render() {
-
     return (
       <MuiThemeProvider>
         <div className="page-container">
-          <Sidebar handleOpen={this.handleOpen.bind(this)} />
-          <DialogWindow ref={(dialog) => { this.dialog = dialog }}/>
-          {React.cloneElement({...this.props}.children, {...this.props, handleOpen:this.handleOpen.bind(this)})}
+          <Sidebar
+            ref={(sidebar) => {
+              this.sidebar = sidebar
+            }}
+            handleOpen={this.handleOpen.bind(this)}
+            currentList={this.currentList.bind(this)}
+          />
+          <DialogWindow
+            loadLists={this.loadLists.bind(this)}
+            ref={(dialog) => {
+              this.dialog = dialog
+            }}/>
+          {
+            React.cloneElement({...this.props}.children, {
+              ...this.props,
+              handleOpen: this.handleOpen.bind(this),
+            })
+          }
         </div>
       </MuiThemeProvider>
     )

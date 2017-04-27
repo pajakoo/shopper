@@ -6,17 +6,20 @@ export default class SavedLists extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      lists: [],
+      selected:'',
+      lists: []
     }
   }
 
   componentDidMount() {
+    this.loadLists()
+  }
 
+  loadLists() {
     let lists = [fetch('http://localhost:8080/api/lists').catch((err) => console.log('fetf: ', err))]
     this.getPromiseData(lists).then(res => {
       this.setState({lists: res.reduce((a, b) => [...a, ...b], [])})
     })
-
   }
 
   getPromiseData(x) {
@@ -34,9 +37,10 @@ export default class SavedLists extends Component {
   render() {
     let arr = this.state.lists.map(function (res, i) {
       return (<ListItem
+        onClick={ () => { this.props.currentList({title:res.title, id: res._id}) }}
         key={i}
         primaryText={res.title}/>)
-    })
+    }.bind(this))
 
     return (
       <List>

@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {View, Text, ScrollView} from 'react-native'
 import {ThemeProvider, ListItem, Button, Toolbar, Icon} from 'react-native-material-ui'
 import DrawerLayout from 'react-native-drawer-layout-polyfill'
-import cyanTheme from 'react-native-material-ui/src/styles/themes/cyan'
+import cyanTheme from 'react-native-material-ui/src/styles/themes/light'
 import {MenuContext} from 'react-native-popup-menu'
 import {baseUrl} from '../Utils'
 

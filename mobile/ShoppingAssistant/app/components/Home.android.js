@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {View, ScrollView, ToastAndroid, Platform, Text} from 'react-native'
 import {ThemeProvider, ListItem, Button, Toolbar} from 'react-native-material-ui'
 import DrawerLayout from 'react-native-drawer-layout-polyfill'
-import cyanTheme from 'react-native-material-ui/src/styles/themes/cyan'
+import cyanTheme from 'react-native-material-ui/src/styles/themes/light'
 import {baseUrl} from '../Utils'
 
 export default class Home extends Component {

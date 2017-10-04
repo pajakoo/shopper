@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {List, ListItem} from 'material-ui/List'
+import {baseUrl} from '../../../../../../api/Utils'
 
 export default class SavedLists extends Component {
 
@@ -16,7 +17,7 @@ export default class SavedLists extends Component {
   }
 
   loadLists() {
-    let lists = [fetch('http://localhost:8080/api/lists').catch((err) => console.log('fetf: ', err))]
+    let lists = [fetch(baseUrl+'/api/lists').catch((err) => console.log('fetf: ', err))]
     this.getPromiseData(lists).then(res => {
       this.setState({lists: res.reduce((a, b) => [...a, ...b], [])})
     })

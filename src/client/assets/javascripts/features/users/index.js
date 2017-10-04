@@ -1,9 +1,9 @@
 import React from 'react'
-import axios from 'axios'
 import {List, ListItem} from 'material-ui/List'
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import ContentAdd from 'material-ui/svg-icons/content/add'
+import {baseUrl} from '../../../../../../api/Utils'
+//import axios from 'axios'
 
 export default class Users extends React.Component {
 
@@ -35,7 +35,7 @@ export default class Users extends React.Component {
 
   componentDidMount() {
 
-    let users = [fetch('http://localhost:8080/api/users').catch((err) => console.log('fetf: ',err))]
+    let users = [fetch(baseUrl+'/api/users').catch((err) => console.log('fetf: ',err))]
     this.getPromiseData(users).then( res => {
       this.setState({users:res.reduce((a,b)=>[...a,...b],[]) })
     })

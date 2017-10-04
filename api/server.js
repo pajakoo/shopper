@@ -1,6 +1,15 @@
 // BASE SETUP
 // =============================================================================
 
+/**
+ *
+ *
+ *
+ *  Kill mongo instance and delete diagnostic data !!!!
+ rm -f  /var/lib/mongo/diagnostic.data/*
+
+ */
+
 // call the packages we need
 var express    = require('express');
 var bodyParser = require('body-parser');
@@ -9,7 +18,8 @@ var morgan     = require('morgan');
 var cors = require('cors');
 
 // use it before all route definitions
-app.use(cors({origin: 'http://localhost:3000'}))
+// app.use(cors({origin: 'http://localhost:3000'}))
+app.use(cors())
 
 // configure app
 app.use(morgan('dev')); // log requests to the console
@@ -118,6 +128,26 @@ router.route('/users/:user_id')
 			res.json({ message: 'Successfully deleted' });
 		})
 	})
+
+router.route('/lists/:list_id')
+  // get the user with that id
+  .get(function(req, res) {
+    List.findById(req.params.list_id, function(err, list) {
+      if (err)
+        res.send(err)
+      res.json(list)
+    })
+  })
+  .post(function (req, res) {
+    var list = new List()
+    list.title = req.body.title;
+
+    list.save(function (err) {
+      if (err)
+        res.send(err)
+      res.json({message: 'LIST created!'});
+    })
+  })
 
   router.route('/lists/:list_id')
   .delete(function (req, res) {

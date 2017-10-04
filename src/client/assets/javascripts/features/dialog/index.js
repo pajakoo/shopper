@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, PropTypes} from 'react'
 import Dialog from 'material-ui/Dialog'
 import TextField from 'material-ui/TextField'
 import FlatButton from 'material-ui/FlatButton'
@@ -7,6 +7,7 @@ export const DIALOG_TYPES = {
   'DELETE': 'DELETE',
   'CREATE': 'CREATE'
 }
+
 export default class DialogWindow extends Component {
 
   constructor(props) {
@@ -33,7 +34,7 @@ export default class DialogWindow extends Component {
     } else if (opt.type == DIALOG_TYPES.CREATE) {
       this.setState({title: 'Create List'})
     }
-    window.modal = this
+    // window.modal = this
   };
 
   handleClose = () => {
@@ -86,6 +87,7 @@ export default class DialogWindow extends Component {
               method: "DELETE"
             }).then((res) => {
             this.handleClose()
+            this.props.clearData()
             this.loadLists()
             console.log(res.json(), this.state.currentListName, 'is Deleted')
             this.setState({currentListName: ''}, function () {
@@ -121,4 +123,7 @@ export default class DialogWindow extends Component {
 
     </Dialog>)
   }
+}
+DialogWindow.propTypes = {
+  clearData: PropTypes.func,
 }

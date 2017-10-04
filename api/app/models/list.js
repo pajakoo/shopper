@@ -1,6 +1,6 @@
 var mongoose = require('mongoose')
 var Schema = mongoose.Schema
-var ItemSchema = new Schema({ name: String })
+var ItemSchema = new Schema({ name: String, qty:Number, price:Number })
 
 var ListSchema = new Schema({
   title: String,
@@ -8,7 +8,7 @@ var ListSchema = new Schema({
   placeCoords: {
     lng: Number, lat: Number
   },
-  remainder: {type: Date, default: Date.now}
+  remainder: Number //{type: Date, default: Date.now}
 })
 
 module.exports = mongoose.model('List', ListSchema)

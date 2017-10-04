@@ -5,6 +5,7 @@ import App from './App';
 import Map from 'features/map/index';
 import Users from 'features/users/index';
 import Login from 'features/fb/index';
+import Items from 'features/items/index';
 import Examples from 'features/examples/index';
 import Examples2 from 'features/examples2/index';
 import Location from 'features/location/index';
@@ -15,6 +16,7 @@ export default (
     <IndexRoute component={Users} />
     <Route path="/map" component={Map} />
     <Route path="/users" component={Users} />
+    <Route path="/lists/:list_id" component={Items} />
     <Route path="/login" component={Login} />
     <Route path="/examples" component={Examples} />
     <Route path="/examples2" component={Examples2} />

@@ -2,7 +2,8 @@
   "name": "shopping-api",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js /mongod --dbpath=/data --port 27017"
+    "start": "mongod --dbpath=/data --port 27017",
+    "start": "node server.js"
   },
   "author": "Krasimir Georgiev",
   "dependencies": {

@@ -22,6 +22,7 @@ import SavedLists from "../SavedLists/index"
 
 // https://reacttraining.com/react-router/web/api/matchPath
 // onClick={(e)=>console.log(e.latLng.lat(), e.latLng.lat())}
+// http://andrewhfarmer.com/component-communication/#8-context
 class LoginButton extends Component {
   static muiName = 'FlatButton';
 

@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import Sidebar from 'features/sidebar/index'
+import {browserHistory} from 'react-router'
 import DialogWindow from 'features/dialog/index'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import injectTapEventPlugin from 'react-tap-event-plugin'
@@ -24,14 +25,24 @@ export default class App extends Component {
       currentListId:this.state.currentListId })
   }
 
+  clearData() {
+    console.log('erase')
+    this.setState({currentListName: ''})
+    this.setState({currentListId: ''})
+    this.sidebar.changeListItems('')
+  }
+
   loadLists() {
     this.sidebar.loadLists()
   }
 
   currentList(p) {
+    console.log(this)
     this.setState({currentListName: p.title})
     this.setState({currentListId: p.id})
     this.sidebar.changeListItems(p.title)
+    // this.history.push('/lists/'+ p.id)
+    // browserHistory.push('/lists/'+ p.id)
   }
 
   render() {
@@ -46,6 +57,7 @@ export default class App extends Component {
             currentList={this.currentList.bind(this)}
           />
           <DialogWindow
+            clearData={this.clearData.bind(this)}
             loadLists={this.loadLists.bind(this)}
             ref={(dialog) => {
               this.dialog = dialog

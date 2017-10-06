@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D2A28121D9B038B00D4039D"
-               BuildableName = "libReact-tvOS.a"
+               BuildableName = "libReact.a"
                BlueprintName = "React-tvOS"
                ReferencedContainer = "container:../node_modules/react-native/React/React.xcodeproj">
             </BuildableReference>
@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-               BuildableName = "ShoppingAssistant-tvOS.app"
-               BlueprintName = "ShoppingAssistant-tvOS"
-               ReferencedContainer = "container:ShoppingAssistant.xcodeproj">
+               BuildableName = "ios-tvOS.app"
+               BlueprintName = "ios-tvOS"
+               ReferencedContainer = "container:ios.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "ShoppingAssistant-tvOSTests.xctest"
-               BlueprintName = "ShoppingAssistant-tvOSTests"
-               ReferencedContainer = "container:ShoppingAssistant.xcodeproj">
+               BuildableName = "ios-tvOSTests.xctest"
+               BlueprintName = "ios-tvOSTests"
+               ReferencedContainer = "container:ios.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -54,7 +54,6 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
@@ -62,9 +61,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "ShoppingAssistant-tvOSTests.xctest"
-               BlueprintName = "ShoppingAssistant-tvOSTests"
-               ReferencedContainer = "container:ShoppingAssistant.xcodeproj">
+               BuildableName = "ios-tvOSTests.xctest"
+               BlueprintName = "ios-tvOSTests"
+               ReferencedContainer = "container:ios.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -72,9 +71,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "ShoppingAssistant-tvOS.app"
-            BlueprintName = "ShoppingAssistant-tvOS"
-            ReferencedContainer = "container:ShoppingAssistant.xcodeproj">
+            BuildableName = "ios-tvOS.app"
+            BlueprintName = "ios-tvOS"
+            ReferencedContainer = "container:ios.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -84,7 +83,6 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = ""
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -96,9 +94,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "ShoppingAssistant-tvOS.app"
-            BlueprintName = "ShoppingAssistant-tvOS"
-            ReferencedContainer = "container:ShoppingAssistant.xcodeproj">
+            BuildableName = "ios-tvOS.app"
+            BlueprintName = "ios-tvOS"
+            ReferencedContainer = "container:ios.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -115,9 +113,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "ShoppingAssistant-tvOS.app"
-            BlueprintName = "ShoppingAssistant-tvOS"
-            ReferencedContainer = "container:ShoppingAssistant.xcodeproj">
+            BuildableName = "ios-tvOS.app"
+            BlueprintName = "ios-tvOS"
+            ReferencedContainer = "container:ios.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

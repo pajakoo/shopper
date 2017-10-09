@@ -76,7 +76,7 @@ export default class Home extends Component {
                 primaryText: res.title,
               }}
               onPress={() => {
-                navigate('Items', {listId:res._id})
+                navigate('Items',{listId: res._id})
               }}
               key={i}/>)
           })

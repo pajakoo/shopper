@@ -3,7 +3,7 @@ import {List, ListItem} from 'material-ui/List'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 
-export default class Users extends React.Component {
+export default class Items extends React.Component {
 
   constructor(props) {
     super(props)
@@ -13,6 +13,7 @@ export default class Users extends React.Component {
       data: {},
       users: []
     }
+     // console.log('gg:',)
   }
 
   handleChange = (event, logged) => {
@@ -32,8 +33,7 @@ export default class Users extends React.Component {
   }
 
   componentDidMount() {
-
-    let users = [fetch('http://localhost:8080/api/users').catch((err) => console.log('fetf: ',err))]
+    let users = [fetch('http://localhost:8080/api/items/'+this.props.params.list_id).catch((err) => console.log('fetf: ',err))]
     this.getPromiseData(users).then( res => {
       this.setState({users:res.reduce((a,b)=>[...a,...b],[]) })
     })

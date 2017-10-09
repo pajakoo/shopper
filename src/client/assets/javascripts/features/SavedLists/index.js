@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {List, ListItem} from 'material-ui/List'
+import {browserHistory} from 'react-router'
 
 export default class SavedLists extends Component {
 
@@ -37,7 +38,10 @@ export default class SavedLists extends Component {
   render() {
     let arr = this.state.lists.map(function (res, i) {
       return (<ListItem
-        onClick={ () => { this.props.currentList({title:res.title, id: res._id}) }}
+        onClick={ () => {
+          this.props.currentList({title:res.title, id: res._id})
+          browserHistory.push('/items/'+res._id)
+        }}
         key={i}
         primaryText={res.title}/>)
     }.bind(this))

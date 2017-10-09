@@ -83,6 +83,7 @@ export default class Home extends Component {
                 primaryText: res.title,
               }}
               onPress={() => {
+                navigate('Items', {listId:res._id})
               }}
               key={i}/>)
           })
@@ -100,6 +101,14 @@ export default class Home extends Component {
             drawerPosition={DrawerLayout.positions.Left}
             renderNavigationView={() => navigationView}>
             <View>
+              {/*<Toolbar
+                leftElement="clear"
+                centerElement="Custom styles"
+                rightElement={{
+                  actions: ['edit'],
+                  menu: { labels: ['Item 1', 'Item 2'] },
+                }}
+              />*/}
               <Toolbar
                 searchable={null}
                 leftElement="menu"

@@ -39,6 +39,7 @@ mongoose.connect(url, function(err, db) {
 // connect to our database
 var Users     = require('./app/models/user');
 var List     = require('./app/models/list');
+var Item     = require('./app/models/item');
 
 // ROUTES FOR OUR API
 // =============================================================================
@@ -128,6 +129,32 @@ router.route('/users/:user_id')
 			res.json({ message: 'Successfully deleted' });
 		})
 	})
+
+router.route('/items/:list_id')
+  .get(function(req, res) {
+    List.findById(req.params.list_id, function(err, list) {
+      if (err)
+        res.send(err)
+
+      res.json(list.items);
+    })
+  })
+  .post(function (req, res) {
+    //https://stackoverflow.com/questions/33049707/push-items-into-mongo-array-via-mongoose
+    var item = new Item()
+    item.name = req.body.name
+    item.completed = req.body.completed
+
+    List.findById(req.params.list_id, function(err, list) {
+      if (err)
+        res.send(err)
+      list.items.push(item)
+      list.save()
+      res.json({message: 'Item was added in '+list._id})
+    })
+    //.delete(function (req, res) {})
+  })
+
 
 router.route('/lists/:list_id')
   // get the user with that id

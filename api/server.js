@@ -1,6 +1,5 @@
 // BASE SETUP
 // =============================================================================
-
 /**
  *
  *
@@ -11,9 +10,11 @@
  */
 
 // call the packages we need
+var fs = require('fs');
+var https = require('https');
 var express    = require('express');
-var bodyParser = require('body-parser');
 var app        = express();
+var bodyParser = require('body-parser');
 var morgan     = require('morgan');
 var cors = require('cors');
 
@@ -28,7 +29,7 @@ app.use(morgan('dev')); // log requests to the console
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var port     = process.env.PORT || 8080; // set our port
+var port     = process.env.PORT || 8080 // 55555; //set our port
 
 var mongoose   = require('mongoose');
 var url = 'mongodb://localhost:27017/krazy';
@@ -207,12 +208,19 @@ router.route('/lists/:list_id')
     });
   });
 
-
-
 // REGISTER OUR ROUTES -------------------------------
 app.use('/api', router);
 
 // START THE SERVER
 // =============================================================================
+
+//http://blog.mgechev.com/2014/02/19/create-https-tls-ssl-application-with-express-nodejs/
+//https://stackoverflow.com/questions/31254725/transport-security-has-blocked-a-cleartext-http
+// https.createServer({
+//   key: fs.readFileSync('key.pem'),
+//   cert: fs.readFileSync('cert.pem')
+//   //passphrase: <passphraseusedwhilecreatingcertificate>
+// }, app).listen(port);
+
 app.listen(port);
 console.log('Magic happens on port ' + port);

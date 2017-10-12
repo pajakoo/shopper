@@ -3,6 +3,7 @@ import {View, ScrollView, ToastAndroid, Platform, Text} from 'react-native'
 import {ThemeProvider, ListItem, Button, Toolbar} from 'react-native-material-ui'
 import DrawerLayout from 'react-native-drawer-layout-polyfill'
 import cyanTheme from 'react-native-material-ui/src/styles/themes/cyan'
+import { BottomNavigation } from 'react-native-material-ui'
 import {baseUrl} from '../Utils'
 
 export default class Home extends Component {
@@ -121,11 +122,32 @@ export default class Home extends Component {
               }
             </ScrollView>
 
-            <Button primary text="Primary"/>
-            <Button raised accent text="Accent"/>
-            <Button raised primary text="Primary"/>
-            <Button disabled text="Disabled"/>
-
+            <BottomNavigation active={this.state.active} hidden={false} >
+              <BottomNavigation.Action
+                key="add-circle-outline"
+                icon="add-circle-outline"
+                label="add item"
+                onPress={() => this.setState({ active: 'today' })}
+              />
+              <BottomNavigation.Action
+                key="share"
+                icon="share"
+                label="share"
+                onPress={() => this.setState({ active: 'people' })}
+              />
+              <BottomNavigation.Action
+                key="alarm"
+                icon="alarm"
+                label="alarm"
+                onPress={() => this.setState({ active: 'bookmark-border' })}
+              />
+              <BottomNavigation.Action
+                key="location-on"
+                icon="location-on"
+                label="location-on"
+                onPress={() => this.setState({ active: 'settings' })}
+              />
+            </BottomNavigation>
           </View>
         </DrawerLayout>
       </ThemeProvider>

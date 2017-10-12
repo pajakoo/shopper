@@ -4,6 +4,7 @@ import {ThemeProvider, ListItem, Button, Toolbar, Icon} from 'react-native-mater
 import DrawerLayout from 'react-native-drawer-layout-polyfill'
 import cyanTheme from 'react-native-material-ui/src/styles/themes/cyan'
 import {MenuContext} from 'react-native-popup-menu'
+import { BottomNavigation } from 'react-native-material-ui'
 import {baseUrl} from '../Utils'
 
 import {
@@ -148,6 +149,34 @@ export default class Home extends Component {
               <Button raised accent text="Accent"/>
               <Button raised primary text="Primary"/>
               <Button disabled text="Disabled"/>
+
+              <BottomNavigation active={this.state.active} hidden={false} >
+                <BottomNavigation.Action
+                  key="today"
+                  icon="today"
+                  label="Today"
+                  onPress={() => this.setState({ active: 'today' })}
+                />
+                <BottomNavigation.Action
+                  key="people"
+                  icon="people"
+                  label="People"
+                  onPress={() => this.setState({ active: 'people' })}
+                />
+                <BottomNavigation.Action
+                  key="bookmark-border"
+                  icon="bookmark-border"
+                  label="Bookmark"
+                  onPress={() => this.setState({ active: 'bookmark-border' })}
+                />
+                <BottomNavigation.Action
+                  key="settings"
+                  icon="settings"
+                  label="Settings"
+                  onPress={() => this.setState({ active: 'settings' })}
+                />
+              </BottomNavigation>
+
               <MenuContext
                 style={{flexDirection: 'column', padding: 30}}>
                 <Text>Hello world!</Text>

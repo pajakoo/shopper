@@ -87,6 +87,7 @@ export default class Items extends React.Component {
             <ContentAdd />
           </FloatingActionButton>
       </div>
+
       </div>
     )
   }

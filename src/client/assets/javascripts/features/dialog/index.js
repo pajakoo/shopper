@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import Dialog from 'material-ui/Dialog'
 import TextField from 'material-ui/TextField'
 import FlatButton from 'material-ui/FlatButton'
+import {baseUrl} from '../../utils/Utils'
 
 export const DIALOG_TYPES = {
   'DELETE': 'DELETE',
@@ -57,7 +58,7 @@ export default class DialogWindow extends Component {
         label="Ok"
         primary={true}
         onTouchTap={() => {
-          fetch("http://localhost:8080/api/lists/",
+          fetch(baseUrl+"/api/lists/",
             {
               headers: {
                 'Accept': 'application/json',
@@ -77,7 +78,7 @@ export default class DialogWindow extends Component {
         label="Ok"
         primary={true}
         onTouchTap={() => {
-          fetch("http://localhost:8080/api/lists/" + this.state.currentListId,
+          fetch(baseUrl+"/api/lists/" + this.state.currentListId,
             {
               headers: {
                 'Accept': 'application/json',

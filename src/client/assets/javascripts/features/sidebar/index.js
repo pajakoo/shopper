@@ -34,6 +34,7 @@ class LoginButton extends Component {
 
 const Logged = (props) => (
   <IconMenu
+    iconStyle={{ fill: 'white' }}
     iconButtonElement={
       <IconButton><MoreVertIcon /></IconButton>
     }
@@ -58,7 +59,7 @@ export default class Sidebar extends React.Component {
     super(props)
     this.state = {
       open: false,
-      logged: false,
+      logged: true,
       lastButtonClicked: null,
       listName:''
     }
@@ -83,13 +84,13 @@ export default class Sidebar extends React.Component {
     return (
       <MuiThemeProvider>
         <div>
-          <Toggle
+          {/*<Toggle
             label="Logged"
             defaultToggled={false}
             onToggle={this.handleChange}
             labelPosition="right"
             style={{margin: 20}}
-          />
+          />*/}
           <AppBar onLeftIconButtonTouchTap={this.handleToggle}
                   title={this.state.listName}
                   iconElementLeft={

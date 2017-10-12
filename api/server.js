@@ -2,7 +2,7 @@
 // =============================================================================
 /**
  *
- *
+ *https://gist.github.com/damianesteban/7e9511ec794dab085ac2
  *
  *  Kill mongo instance and delete diagnostic data !!!!
  rm -f  /var/lib/mongo/diagnostic.data/*
@@ -21,7 +21,7 @@ var cors = require('cors');
 // use it before all route definitions
 // app.use(cors({origin: 'http://localhost:3000'}))
 app.use(cors())
-
+//app.use(express.static('app'))
 // configure app
 app.use(morgan('dev')); // log requests to the console
 
@@ -31,11 +31,22 @@ app.use(bodyParser.json());
 
 var port     = process.env.PORT || 8080 // 55555; //set our port
 
-var mongoose   = require('mongoose');
-var url = 'mongodb://localhost:27017/krazy';
+/*var mongoose   = require('mongoose');
+//var url = 'mongodb://localhost:27017/krazy';
+var url = 'mongodb://pajakoo:yaywotIdtagDup3@ds117965.mlab.com:17965/krazy';
 mongoose.connect(url, function(err, db) {
   console.log("Connected correctly to DB server");
+});*/
+
+//Set up mongoose connection
+var mongoose = require('mongoose');
+var mongoDB = 'mongodb://pajakoo:yaywotIdtagDup3@ds117965.mlab.com:17965/krazy';
+mongoose.connect(mongoDB, {
+  useMongoClient: true
 });
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
 
 // connect to our database
 var Users     = require('./app/models/user');
@@ -156,6 +167,28 @@ router.route('/items/:list_id')
     //.delete(function (req, res) {})
   })
 
+router.route('/list/:list_id/:item_id')
+  .delete(function (req, res) {
+
+    List.update(
+      { _id: req.params.list_id },
+      { $pull: { 'items': { _id: req.params.item_id } } }
+    );
+
+    /*List.findById(req.params.list_id, function(err, list) {
+      if (err)
+        res.send(err)
+
+      list.items.remove({
+        _id: req.params.item_id
+      }, function (err, list) {
+        if (err)
+          res.send(err);
+        res.json({message: 'Successfully deleted'});
+      })
+    })
+    */
+  })
 
 router.route('/lists/:list_id')
   // get the user with that id

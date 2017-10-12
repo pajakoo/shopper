@@ -1,5 +1,7 @@
 import React from 'react'
 import {browserHistory} from 'react-router'
+import {baseUrl} from '../../utils/Utils'
+
 export default class Login extends React.Component {
 
   constructor(props) {
@@ -43,7 +45,7 @@ export default class Login extends React.Component {
             function (response) {
               if (response && !response.error) {
                 console.log('eek:',response)
-                fetch("http://localhost:8080/api/users/",
+                fetch(baseUrl+"/api/users/",
                   {
                     headers: {
                       'Accept': 'application/json',

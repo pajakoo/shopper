@@ -18,6 +18,7 @@ var bodyParser = require('body-parser');
 var morgan     = require('morgan');
 var cors = require('cors');
 
+var ObjectId = require('mongodb').ObjectID;
 // use it before all route definitions
 // app.use(cors({origin: 'http://localhost:3000'}))
 app.use(cors())
@@ -31,14 +32,15 @@ app.use(bodyParser.json());
 
 var port     = process.env.PORT || 8080 // 55555; //set our port
 
-/*var mongoose   = require('mongoose');
-//var url = 'mongodb://localhost:27017/krazy';
-var url = 'mongodb://pajakoo:yaywotIdtagDup3@ds117965.mlab.com:17965/krazy';
+var mongoose   = require('mongoose');
+var url = 'mongodb://localhost:27017/krazy';
+//var url = 'mongodb://pajakoo:yaywotIdtagDup3@ds117965.mlab.com:17965/krazy';
 mongoose.connect(url, function(err, db) {
   console.log("Connected correctly to DB server");
-});*/
+});
 
 //Set up mongoose connection
+/*
 var mongoose = require('mongoose');
 var mongoDB = 'mongodb://pajakoo:yaywotIdtagDup3@ds117965.mlab.com:17965/krazy';
 mongoose.connect(mongoDB, {
@@ -46,6 +48,7 @@ mongoose.connect(mongoDB, {
 });
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+*/
 
 
 // connect to our database
@@ -167,27 +170,32 @@ router.route('/items/:list_id')
     //.delete(function (req, res) {})
   })
 
-router.route('/list/:list_id/:item_id')
-  .delete(function (req, res) {
+router.route('/update/list/:list_id')
+  .put(function (req, res) {
+    console.log(req.body.items)
+      List.update(
+        {_id: ObjectId(req.params.list_id)},
+        {$set: {items: req.body.items}},
+        function (err, documents) {
+          res.send({error: err, affected: documents})
+        }
+      )
+      res.json({message: 'Successfully updated'})
+  })
 
-    List.update(
-      { _id: req.params.list_id },
-      { $pull: { 'items': { _id: req.params.item_id } } }
-    );
+router.route('/list/:list_id/item/:item_id')
+  .put(function (req, res) {
 
-    /*List.findById(req.params.list_id, function(err, list) {
-      if (err)
-        res.send(err)
+    List.findOneAndUpdate(
+      {_id: ObjectId(req.params.list_id)},
+      {$pull: {items: {_id: ObjectId(req.params.item_id)}}},
+      { new: true },
+      function (err, documents) {
+        res.send({ error: err, affected: documents });
+      }
+    )
+    res.json({message: 'Successfully deleted'})
 
-      list.items.remove({
-        _id: req.params.item_id
-      }, function (err, list) {
-        if (err)
-          res.send(err);
-        res.json({message: 'Successfully deleted'});
-      })
-    })
-    */
   })
 
 router.route('/lists/:list_id')

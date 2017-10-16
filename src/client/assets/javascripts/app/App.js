@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import Sidebar from 'features/sidebar/index'
 import DialogWindow from 'features/dialog/index'
+import BottomNav from 'features/BottomNav/index'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 
@@ -56,6 +57,7 @@ export default class App extends Component {
               handleOpen: this.handleOpen.bind(this),
             })
           }
+          <BottomNav />
         </div>
       </MuiThemeProvider>
     )

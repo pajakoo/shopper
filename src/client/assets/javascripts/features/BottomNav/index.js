@@ -9,6 +9,10 @@ import Share from 'material-ui/svg-icons/social/share'
 import Edit from 'material-ui/svg-icons/editor/mode-edit'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import TimePicker from 'material-ui/TimePicker'
+import DatePicker from 'material-ui/DatePicker'
+import Dialog from 'material-ui/Dialog'
+import FlatButton from 'material-ui/FlatButton';
+import {baseUrl} from '../../utils/Utils'
 
 const alarm = <Alarm />
 const nearbyIcon = <IconLocationOn />
@@ -19,6 +23,9 @@ export default class BottomNav extends React.Component {
 
   state = {
     selectedIndex: 0,
+    open:false,
+    time:null,
+    date: null
   };
 
   select = (index) => this.setState({selectedIndex: index});
@@ -26,8 +33,52 @@ export default class BottomNav extends React.Component {
   componentDidMount() {
 
   }
+  handleOpen = () => {
+    this.setState({open: true});
+  };
 
+  handleClose = () => {
+    this.setState({open: false})
+    var time = this.state.time ? this.state.time : new Date()
+    var date = this.state.date ? this.state.date : new Date()
+    //console.log( date.getFullYear()+','+date.getMonth()+','+date.getDay()+','+ time.getHours()+','+time.getMinutes()+','+time.getSeconds()+','+ time.getMilliseconds(),
+    //   new Date(
+    //   date.getFullYear(),
+    //   date.getMonth(),
+    //   date.getDate(),
+    //   time.getHours(),
+    //   time.getMinutes(),
+    //   time.getSeconds(),
+    //   time.getMilliseconds() )
+
+    fetch(baseUrl + "/api/listtime/59e617ad920f400ca475b885",//" + this.props.params.list_id + "
+    {
+      headers: {
+        'Accept': 'application/json',
+          'Content-Type': 'application/json'
+      },
+      method: "PUT",
+      body:  JSON.stringify({ time: new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      time.getHours(),
+      time.getMinutes(),
+      time.getSeconds(),
+      time.getMilliseconds() ).getTime() }),
+
+    } ).then(() => {})
+
+  }
   render() {
+    const actions = [
+      <FlatButton
+        label="Ok"
+        primary={true}
+        keyboardFocused={true}
+        onClick={this.handleClose}
+      />,
+    ];
     return (
       <div>
       <Paper zDepth={1}>
@@ -45,7 +96,7 @@ export default class BottomNav extends React.Component {
           <BottomNavigationItem
             label="Time"
             icon={alarm}
-            onClick={() => this.select(2) }
+            onClick={this.handleOpen}
           />
           <BottomNavigationItem
             label="Location"
@@ -53,6 +104,18 @@ export default class BottomNav extends React.Component {
             onClick={() => this.select(3)}
           />
         </BottomNavigation>
+        <Dialog
+          title="Set Date/Time Reminder"
+          actions={actions}
+          modal={false}
+          open={this.state.open}
+          onRequestClose={this.handleClose}
+        >
+          {/*https://medium.com/differential/how-to-setup-push-notifications-in-react-native-ios-android-30ea0131355e*/}
+          <TimePicker autoOk={true} onChange={(n, _time) =>  this.setState({time: _time}) } hintText="Time Picker" />
+          <DatePicker autoOk={true} onChange={(n, _date) =>  this.setState({date: _date}) } hintText="Date Picker" />
+        </Dialog>
+
         <div style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 {/*
           <TextField

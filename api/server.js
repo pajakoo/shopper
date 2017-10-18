@@ -172,7 +172,6 @@ router.route('/items/:list_id')
 
 router.route('/update/list/:list_id')
   .put(function (req, res) {
-    console.log(req.body.items)
       List.update(
         {_id: ObjectId(req.params.list_id)},
         {$set: {items: req.body.items}},
@@ -180,7 +179,7 @@ router.route('/update/list/:list_id')
           res.send({error: err, affected: documents})
         }
       )
-      res.json({message: 'Successfully updated'})
+      res.json({message: 'Items Successfully updated'})
   })
 
 router.route('/list/:list_id/item/:item_id')
@@ -198,9 +197,32 @@ router.route('/list/:list_id/item/:item_id')
 
   })
 
+//router.route('/lists/:list_id/location')
+router.route('/listtime/:list_id')
+  .put(function (req, res) {
+
+    List.findOneAndUpdate(
+      {_id: ObjectId(req.params.list_id)},
+      {$set: {remainder: req.body.time}},
+      function (err, documents) {
+        res.send({ error: err, affected: documents });
+      }
+    )
+    res.json({message: 'Successfully deleted'})
+
+  })
+
 router.route('/lists/:list_id')
-  // get the user with that id
-  .get(function(req, res) {
+  .delete(function (req, res) {
+    List.remove({
+      _id: req.params.list_id
+    }, function (err, list) {
+      if (err)
+        res.send(err)
+      res.json({message: 'Successfully deleted', list})
+    })
+  })
+  /*.get(function(req, res) {
     List.findById(req.params.list_id, function(err, list) {
       if (err)
         res.send(err)
@@ -216,23 +238,14 @@ router.route('/lists/:list_id')
         res.send(err)
       res.json({message: 'LIST created!'});
     })
-  })
+  })*/
 
-  router.route('/lists/:list_id')
-  .delete(function (req, res) {
-    List.remove({
-      _id: req.params.list_id
-    }, function (err, list) {
-      if (err)
-        res.send(err);
-      res.json({message: 'Successfully deleted'});
-    })
-  })
 
   router.route('/lists')
   .post(function (req, res) {
     var list = new List()
-    list.title = req.body.title;
+    list.title = req.body.title
+    list.remainder = '123'
 
     list.save(function (err) {
       if (err)

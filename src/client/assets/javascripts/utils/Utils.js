@@ -4,8 +4,8 @@
 var api = {
 
   //baseUrl: 'https://10.10.0.119:55555',
-  baseUrl: 'https://shopper.openode.io',
-  //baseUrl: 'http://10.10.0.119:8080',
+  //baseUrl: 'https://shopper.openode.io',
+  baseUrl: 'http://10.10.0.119:8080',
   //baseUrl: 'http://87.126.166.28:8080',
   //baseUrl: 'http://192.168.0.2:8080',
 

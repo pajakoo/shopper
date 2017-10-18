@@ -14,6 +14,7 @@ export default class Notifier extends Component {
 
   handlePermissionGranted() {
     console.log('Permission Granted');
+
     this.setState({
       ignore: false
     });
@@ -78,10 +79,11 @@ export default class Notifier extends Component {
       dir: 'ltr'
       // sound: './sound.mp3'  // no browsers supported https://developer.mozilla.org/en/docs/Web/API/notification/sound#Browser_compatibility
     }
+
     this.setState({
       title: title,
       options: options
-    });
+    })
   }
 
   render() {
@@ -104,8 +106,9 @@ export default class Notifier extends Component {
           options={this.state.options}
         />
         <audio id='sound' preload='auto'>
-          <source src='./sound.mp3' type='audio/mpeg'/>
-          <source src='./sound.ogg' type='audio/ogg'/>
+          {/*<source src='./sound.mp3' type='audio/mpeg'/>*/}
+          {/*<source src='./sound.ogg' type='audio/ogg'/>*/}
+
           {/*<embed hidden='true' autostart='false' loop='false' src='./sound.mp3'/>*/}
         </audio>
       </div>

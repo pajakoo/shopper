@@ -2,7 +2,7 @@ var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 var ItemSchema = require('./ItemSchema')
 
-var ListSchema = new Schema({
+module.exports =  new Schema({
   title: String,
   items: [ItemSchema],
   remainder: String,
@@ -11,5 +11,3 @@ var ListSchema = new Schema({
     lng: Number
   },
 })
-
-module.exports = mongoose.model('List', ListSchema)

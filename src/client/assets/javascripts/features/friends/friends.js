@@ -1,9 +1,8 @@
 // @flow
-
-import { createStructuredSelector } from 'reselect';
-import assign from 'lodash/assign';
-
-import { State } from 'models/friends';
+import {createStructuredSelector} from 'reselect'
+import assign from 'lodash/assign'
+import {baseUrl, getPromiseData} from '../../utils/Utils'
+import {State} from 'models/friends'
 
 // Action Types
 
@@ -11,6 +10,9 @@ import { State } from 'models/friends';
 const ADD_FRIEND = 'redux-app/friends/ADD_FRIEND';
 const STAR_FRIEND = 'redux-app/friends/STAR_FRIEND';
 const DELETE_FRIEND = 'redux-app/friends/DELETE_FRIEND';
+const UPDATE_COORDS = 'redux-app/friends/UPDATE_COORDS';
+const SELECT_LIST = 'redux-app/friends/SELECT_LIST';
+const ERROR = 'redux-app/friends/ERROR';
 
 // This will be used in our root reducer and selectors
 
@@ -19,6 +21,11 @@ export const NAME = 'friends';
 // Define the initial state for `friends` module
 
 const initialState: State = {
+
+  lists:[],
+  newCoords:{lat:0,lng:0},
+  currentList: null,
+
   friends: [0, 1, 2, 3, 4],
   friendsById: [
     {
@@ -42,7 +49,7 @@ const initialState: State = {
       name: 'Rakim'
     }
   ]
-};
+}
 
 // Reducer
 
@@ -60,6 +67,10 @@ const initialState: State = {
 
 export default function reducer(state: State = initialState, action: any = {}): State {
   switch (action.type) {
+    case SELECT_LIST: {
+      return []
+    }
+
     case ADD_FRIEND: {
       const len = state.friends.length ? state.friends.length : 1;
       const newId = (state.friends[len - 1] + 1) || 0;
@@ -83,6 +94,17 @@ export default function reducer(state: State = initialState, action: any = {}): 
         friendsById: state.friendsById.filter((friend) => friend.id !== action.id)
       };
 
+    case UPDATE_COORDS:
+      return {
+        ...state,
+        newCoords: action.payload
+      }
+
+    case ERROR:
+      return {
+        ...state,
+        newCoords: action.payload
+      }
     case STAR_FRIEND:
       return {
         ...state,
@@ -129,7 +151,34 @@ function starFriend(id: number) {
   return {
     type: STAR_FRIEND,
     id
-  };
+  }
+}
+
+function updateListCoords(coords: Object) {
+  return (dispatch) => {
+
+    let coordsResponse = [fetch(baseUrl + "/api/listcoords/59e88e3bbd83b012cb327498",//" + this.props.params.list_id + "
+      {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: "PUT",
+        body: JSON.stringify({coords: {lat: coords.latLng.lat(), lng: coords.latLng.lng()}}),
+
+      }).catch((err) => dispatch({
+        type: ERROR,
+        payload: err
+      })
+    )]
+    getPromiseData(coordsResponse).then((res) => {
+      dispatch({
+        type: UPDATE_COORDS,
+        payload: res[0].data
+      })
+    })
+  }
+
 }
 
 // Selectors
@@ -143,5 +192,6 @@ export const selector = createStructuredSelector({
 export const actionCreators = {
   addFriend,
   deleteFriend,
-  starFriend
+  starFriend,
+  updateListCoords
 };

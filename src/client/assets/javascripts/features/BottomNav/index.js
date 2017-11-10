@@ -1,23 +1,32 @@
-import React from 'react'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import {TextField} from 'material-ui'
+import ContentAdd from 'material-ui/svg-icons/content/add'
+import React from 'react'
 import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation'
 import Paper from 'material-ui/Paper'
 import IconLocationOn from 'material-ui/svg-icons/communication/location-on'
 import Alarm from 'material-ui/svg-icons/action/alarm'
 import Share from 'material-ui/svg-icons/social/share'
 import Edit from 'material-ui/svg-icons/editor/mode-edit'
-import ContentAdd from 'material-ui/svg-icons/content/add'
 import TimePicker from 'material-ui/TimePicker'
 import DatePicker from 'material-ui/DatePicker'
 import Dialog from 'material-ui/Dialog'
-import FlatButton from 'material-ui/FlatButton';
+import FlatButton from 'material-ui/FlatButton'
 import {baseUrl} from '../../utils/Utils'
+import {browserHistory} from 'react-router'
+
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { actionCreators as friendsActions, selector } from '../friends/'
 
 const alarm = <Alarm />
 const nearbyIcon = <IconLocationOn />
 const share = <Share />
 const edit = <Edit />
+
+@connect(selector, (dispatch) => ({
+  actions: bindActionCreators(friendsActions, dispatch)
+}))
 
 export default class BottomNav extends React.Component {
 
@@ -33,6 +42,7 @@ export default class BottomNav extends React.Component {
   componentDidMount() {
 
   }
+
   handleOpen = () => {
     this.setState({open: true});
   };
@@ -101,7 +111,8 @@ export default class BottomNav extends React.Component {
           <BottomNavigationItem
             label="Location"
             icon={nearbyIcon}
-            onClick={() => this.select(3)}
+            onClick={ () => browserHistory.push('/map/'+props.list_id) }
+            // onClick={() => this.select(3)}
           />
         </BottomNavigation>
         <Dialog

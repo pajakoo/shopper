@@ -118,6 +118,8 @@
     "redux": "3.5.2",
     "redux-logger": "2.6.1",
     "redux-promise": "0.5.3",
+    "redux-promise-middleware": "4.4.1",
+    "redux-thunk": "2.2.0",
     "reselect": "2.5.3",
     "whatwg-fetch": "2.0.3"
   }

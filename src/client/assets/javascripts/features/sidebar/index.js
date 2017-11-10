@@ -45,8 +45,7 @@ const Logged = (props) => (
       props.handleOpen(DIALOG_TYPES.DELETE)
     }}/>
     <MenuItem primaryText="Rename"/>
-    <MenuItem primaryText="Time remainder"/>
-    <MenuItem onClick={ () => browserHistory.push('/map') }>Location Remainder</MenuItem>
+    <MenuItem onClick={ () => browserHistory.push('/map/'+props.list_id) }>Location Remainder</MenuItem>
     <MenuItem primaryText="Sign out"/>
   </IconMenu>
 )
@@ -61,7 +60,8 @@ export default class Sidebar extends React.Component {
       open: false,
       logged: true,
       lastButtonClicked: null,
-      listName:''
+      listName:'',
+      listId:''
     }
   }
 
@@ -71,9 +71,10 @@ export default class Sidebar extends React.Component {
 
   handleToggle = () => this.setState({open: !this.state.open})
 
-  changeListItems(p) {
+  changeListItems(list) {
     this.handleToggle()
-    this.setState({listName:p})
+    this.setState({listName:list.title})
+    this.setState({listId:list.id})
   }
 
   loadLists() {
@@ -98,7 +99,7 @@ export default class Sidebar extends React.Component {
                       <IconButton><NavigationClose /></IconButton> :
                       <IconButton><Menu  /> </IconButton>}
                   iconElementRight={this.state.logged ?
-                    <Logged handleOpen={this.props.handleOpen.bind(this)}/> :
+                    <Logged list_id={this.state.listId} handleOpen={this.props.handleOpen.bind(this)}/> :
                     <LoginButton />}
           />
           <Drawer

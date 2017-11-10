@@ -32,7 +32,7 @@ export default class App extends Component {
   currentList(p) {
     this.setState({currentListName: p.title})
     this.setState({currentListId: p.id})
-    this.sidebar.changeListItems(p.title)
+    this.sidebar.changeListItems(p)
   }
 
   render() {

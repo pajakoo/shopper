@@ -291,4 +291,3 @@ Map.defaultProps = {
   visible: true
 }
 
-export default Map;

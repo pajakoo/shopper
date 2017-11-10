@@ -145,13 +145,14 @@ router.route('/users/:user_id')
 		})
 	})
 
+// db.getCollection('users').find({'lists._id':ObjectId('5a031a8f6691201e2bad2a7e')})
 router.route('/items/:list_id')
+
   .get(function(req, res) {
-    List.findById(req.params.list_id, function(err, list) {
+      Users.find({'lists._id':ObjectId(req.params.list_id)}, function(err, user) {
       if (err)
         res.send(err)
-
-      res.json(list.items);
+      res.json(user)
     })
   })
   .post(function (req, res) {
@@ -167,7 +168,6 @@ router.route('/items/:list_id')
       list.save()
       res.json({message: 'Item was added in '+list._id})
     })
-    //.delete(function (req, res) {})
   })
 
 router.route('/update/list/:list_id')
@@ -211,6 +211,18 @@ router.route('/listtime/:list_id')
     res.json({message: 'Successfully deleted'})
 
   })
+router.route('/listcoords/:list_id')
+  .put(function (req, res) {
+    List.findOneAndUpdate(
+      {_id: ObjectId(req.params.list_id)},
+      {$set: {placeCoordinates: req.body.coords}},
+      function (err, documents) {
+        res.send({ error: err, affected: documents });
+      }
+    )
+    res.json({message: 'Successfully update coords for list: '+req.params.list_id, data:req.body.coords})
+
+  })
 
 router.route('/lists/:list_id')
   .delete(function (req, res) {
@@ -240,27 +252,34 @@ router.route('/lists/:list_id')
     })
   })*/
 
-
-  router.route('/lists')
+  router.route('/lists/:user_id')
   .post(function (req, res) {
     var list = new List()
     list.title = req.body.title
     list.remainder = '123'
 
-    list.save(function (err) {
+    Users.findById(req.body.userId, function(err, user) {
+      if (err)
+        res.send(err)
+      user.lists.push(list)
+      user.save()
+      res.json({message: 'List was added in ' + req.body.userId})
+    })
+
+/*    list.save(function (err) {
       if (err)
         res.send(err)
       res.json({message: 'LIST created!'});
-    })
+    })*/
   })
   .get(function(req, res) {
-    List.find(function(err, lists) {
+    Users.findById(req.params.user_id, function(err, user) {
       if (err)
-        res.send(err);
+        res.send(err)
 
-      res.json(lists);
-    });
-  });
+      res.json(user.lists)
+    })
+  })
 
 // REGISTER OUR ROUTES -------------------------------
 app.use('/api', router);

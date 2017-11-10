@@ -1,49 +1,35 @@
-
-/* global google */
 import {
   default as React,
   Component,
-} from "react";
-
+} from "react"
+import {PropTypes as T} from 'react'
+import {makeCancelable} from './src/lib/cancelablePromise'
+import {baseUrl} from '../../utils/Utils'
 import {
   withGoogleMap,
   GoogleMap,
   Marker,
   InfoWindow,
-} from "./lib";
+} from "./lib"
+
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { actionCreators as friendsActions, selector } from '../friends/'
 
 const ClosureListenersExampleGoogleMap = withGoogleMap(props => (
   <GoogleMap
-    defaultZoom={4}
-    defaultCenter={new google.maps.LatLng(-25.363882, 131.044922)}
+    defaultZoom={13}
+    center={new google.maps.LatLng(props.currentLocation.lat, props.currentLocation.lng)}
   >
-    {props.markers.map((marker, index) => {
-      const onClick = () => props.onMarkerClick(marker);
-      const onCloseClick = () => props.onCloseClick(marker);
+    <Marker
+      position={new google.maps.LatLng(props.currentLocation.lat, props.currentLocation.lng)}
+      title='Pick a position'
+      draggable={true}
 
-      return (
-        <Marker
-          key={index}
-          position={marker.position}
-          title={(index + 1).toString()}
-          onClick={onClick}
-          draggable={true}
-
-        >
-          {marker.showInfo && (
-            <InfoWindow onCloseClick={onCloseClick}>
-              <div>
-                <strong>{marker.content}</strong>
-                <br />
-                <em>The contents of this InfoWindow are actually ReactElements.</em>
-              </div>
-            </InfoWindow>
-          )}
-        </Marker>
-      );
-    })}
+    />
+    <Marker />
   </GoogleMap>
-));
+))
 
 function generateInitialMarkers() {
   const southWest = new google.maps.LatLng(-31.203405, 125.244141);
@@ -72,15 +58,78 @@ function generateInitialMarkers() {
  *
  * Add <script src="https://maps.googleapis.com/maps/api/js"></script> to your HTML to provide google.maps reference
  */
-export default class ClosureListenersExample extends Component {
 
-  state = {
-    markers: generateInitialMarkers(),
-  };
+@connect(selector, (dispatch) => ({
+  actions: bindActionCreators(friendsActions, dispatch)
+}))
+
+export default class Map extends Component {
+
+  static propTypes = {
+    zoom: T.number,
+    centerAroundCurrentLocation: T.bool,
+    center: T.object,
+    initialCenter: T.object,
+  }
+
+  static defaultProps = {
+    zoom: 14,
+    initialCenter: {
+      lat: 37.774929,
+      lng: -122.419416
+    },
+    center: {},
+    centerAroundCurrentLocation: false,
+    style: {},
+    containerStyle: {},
+    visible: true
+  }
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      markers: generateInitialMarkers(),
+
+      currentLocation: {
+        lat: this.props.initialCenter.lat,
+        lng: this.props.initialCenter.lng
+      }
+    }
+  }
+
+  componentWillMount() {
+    if (navigator && navigator.geolocation) {
+      this.geoPromise = makeCancelable(
+        new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject);
+        })
+      );
+
+      /*this.geoPromise.promise.then(pos => {
+        const coords = pos.coords
+
+        this.state.dispatch({
+          type: 'UPDATE_COORDS',
+          payload: {
+            lat: coords.latitude,
+            lng: coords.longitude
+          }
+
+        })
+
+        this.setState({
+          currentLocation: {
+            lat: coords.latitude,
+            lng: coords.longitude
+          }
+        })
+      }).catch(e => e);*/
+    }
+
+  }
 
   handleMarkerClick = this.handleMarkerClick.bind(this);
   handleCloseClick = this.handleCloseClick.bind(this);
-
   handleMarkerClick(targetMarker) {
     this.setState({
       markers: this.state.markers.map(marker => {
@@ -94,7 +143,6 @@ export default class ClosureListenersExample extends Component {
       }),
     });
   }
-
   handleCloseClick(targetMarker) {
     this.setState({
       markers: this.state.markers.map(marker => {
@@ -110,8 +158,11 @@ export default class ClosureListenersExample extends Component {
   }
 
   render() {
+
     return (
       <ClosureListenersExampleGoogleMap
+        actions={this.props.actions}
+
         containerElement={
           <div style={{ height: `100%` }} />
         }
@@ -121,7 +172,11 @@ export default class ClosureListenersExample extends Component {
         onMarkerClick={this.handleMarkerClick}
         onCloseClick={this.handleCloseClick}
         markers={this.state.markers}
+        currentLocation={this.state.currentLocation}
+        listId={this.props.params.list_id}
       />
     );
   }
 }
+
+

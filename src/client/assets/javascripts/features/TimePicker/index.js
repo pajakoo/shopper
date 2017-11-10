@@ -1,5 +1,5 @@
-import React from 'react';
-import TimePicker from 'material-ui/TimePicker';
+import React from 'react'
+import TimePicker from 'material-ui/TimePicker'
 
 const TimePickerView = () => (
   <div>
@@ -20,6 +20,6 @@ const TimePickerView = () => (
       hintText="Disabled TimePicker"
     />
   </div>
-);
+)
 
-export default TimePickerView;
+export default TimePickerView

@@ -32,7 +32,8 @@ app.use(bodyParser.json());
 
 var port     = process.env.PORT || 8080 // 55555; //set our port
 
-var mongoose   = require('mongoose');
+var mongoose   = require('mongoose')
+var Schema   = mongoose.Schema
 var url = 'mongodb://localhost:27017/krazy';
 //var url = 'mongodb://pajakoo:yaywotIdtagDup3@ds117965.mlab.com:17965/krazy';
 mongoose.connect(url, function(err, db) {
@@ -52,7 +53,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 
 // connect to our database
-var Users     = require('./app/models/user');
+var User     = require('./app/models/user');
 var List     = require('./app/models/list');
 var Item     = require('./app/models/item');
 
@@ -82,20 +83,20 @@ router.route('/users')
 	.post(function(req, res) {
 
     // Pass to next layer of middleware
-		var user = new Users();		// create a new instance of the Users model
+		var user = new User();		// create a new instance of the User model
 		user.name = req.body.name;  // set the users name (comes from the request)
 
 		user.save(function(err) {
 			if (err)
 				res.send(err);
 
-			res.json({ message: 'Users created!' });
+			res.json({ message: 'User created!' });
 		});
 	})
 
 	// get all the users (accessed at GET http://localhost:8080/api/users)
 	.get(function(req, res) {
-		Users.find(function(err, users) {
+		User.find(function(err, users) {
 			if (err)
 				res.send(err);
 
@@ -109,7 +110,7 @@ router.route('/users/:user_id')
 
 	// get the user with that id
 	.get(function(req, res) {
-		Users.findById(req.params.user_id, function(err, user) {
+		User.findById(req.params.user_id, function(err, user) {
 			if (err)
 				res.send(err);
 			res.json(user);
@@ -118,7 +119,7 @@ router.route('/users/:user_id')
 
 	// update the user with this id
 	.put(function(req, res) {
-		Users.findById(req.params.user_id, function(err, user) {
+		User.findById(req.params.user_id, function(err, user) {
 
 			if (err)
 				res.send(err);
@@ -128,7 +129,7 @@ router.route('/users/:user_id')
 				if (err)
 					res.send(err);
 
-				res.json({ message: 'Users updated!' });
+				res.json({ message: 'User updated!' });
 			});
 
 		});
@@ -136,7 +137,7 @@ router.route('/users/:user_id')
 
 	// delete the user with this id
 	.delete(function(req, res) {
-		Users.remove({
+		User.remove({
 			_id: req.params.user_id
 		}, function(err, user) {
 			if (err)
@@ -145,14 +146,13 @@ router.route('/users/:user_id')
 		})
 	})
 
-// db.getCollection('users').find({'lists._id':ObjectId('5a031a8f6691201e2bad2a7e')})
 router.route('/items/:list_id')
-
   .get(function(req, res) {
-      Users.find({'lists._id':ObjectId(req.params.list_id)}, function(err, user) {
+    List.findById(req.params.list_id, function(err, list) {
       if (err)
         res.send(err)
-      res.json(user)
+
+      res.json(list.items);
     })
   })
   .post(function (req, res) {
@@ -252,32 +252,83 @@ router.route('/lists/:list_id')
     })
   })*/
 
-  router.route('/lists/:user_id')
+
+  router.route('/lists')
   .post(function (req, res) {
-    var list = new List()
-    list.title = req.body.title
-    list.remainder = '123'
 
-    Users.findById(req.body.userId, function(err, user) {
+    User.findById({_id: req.body.userId}, function(err, user) {
       if (err)
         res.send(err)
-      user.lists.push(list)
-      user.save()
-      res.json({message: 'List was added in ' + req.body.userId})
+
+      user.save(function (err) {
+      if (err)
+        res.send(err)
+
+      var list = new List({
+        title: req.body.title,
+        creator: user._id
+      })
+      list.save(function (err) {
+        if (err)
+          res.send(err)
+
+        List.
+        findOne({ _id: list._id }).
+        populate('creator').
+        exec(function (err, list) {
+          if (err)
+            res.send(err)
+
+          res.json(list)
+          console.log('The author is %s', list.creator.name)
+        })
+
+      })
     })
+  })
 
-/*    list.save(function (err) {
+    // http://dbversity.com/mongodb-dbref-database-references-usage/
+/*
+    User.findOne({_id: req.body.userId}, function(err, user) {
       if (err)
         res.send(err)
-      res.json({message: 'LIST created!'});
+
+      user.save(function (err) {
+        if (err)
+          res.send(err)
+
+        var list = new List({
+          title: req.body.title,
+          creator: user._id,
+          remainder: '123'
+        })
+
+        list.save(function (err) {
+          if (err)
+            res.send(err)
+          res.json({message: 'LIST created!'})
+        })
+
+        List.
+        findOne({ _id: list._id }).
+        populate('creator').
+        exec(function (err, list) {
+          if (err)
+            res.send(err)
+
+          console.log('Is there a list %s', list)
+          console.log('The author is %s', list.creator.name)
+        })
+
+      })
     })*/
   })
   .get(function(req, res) {
-    Users.findById(req.params.user_id, function(err, user) {
+    List.find(function(err, lists) {
       if (err)
-        res.send(err)
+        res.send(err);
 
-      res.json(user.lists)
+      res.json(lists)
     })
   })
 

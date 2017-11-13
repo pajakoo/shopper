@@ -28,19 +28,19 @@ class CheckBox extends React.Component {
             }
             return x
           })
-            fetch(baseUrl + "/api/update/list/" + this.props.params.list_id,
-              {
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json'
-                },
-                method: "PUT",
-                body: JSON.stringify({items: newItems})
-              }).then(() => {
-              this.setState({checked: !this.state.checked})
-              console.log('Checkbox: ', this.state.checked)
-            })
-          }
+          fetch(baseUrl + "/api/update/list/" + this.props.params.list_id,
+            {
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              method: "PUT",
+              body: JSON.stringify({items: newItems})
+            }).then(() => {
+            this.setState({checked: !this.state.checked})
+            console.log('Checkbox: ', this.state.checked)
+          })
+        }
         }
       />)
   }
@@ -77,17 +77,9 @@ export default class Items extends React.Component {
   }
 
   loadItems() {
-    let items = [fetch(baseUrl + '/api/items/' + this.props.params.list_id)
-                  .catch((err) => console.log('fetf: ', err))]
-
+    let items = [fetch(baseUrl + '/api/items/' + this.props.params.list_id).catch((err) => console.log('fetf: ', err))]
     getPromiseData(items).then(res => {
-      if(res.length < 1 ) return
-      var ctx = this
-      var userItems = res.reduce((a, b) => [...a, ...b], [])[0].lists.find(function(list) {
-        return list._id === ctx.props.params.list_id;
-      })
-
-      this.setState({items:userItems.items})
+      this.setState({items: res.reduce((a, b) => [...a, ...b], [])})
     })
   }
 

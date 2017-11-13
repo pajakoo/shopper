@@ -65,7 +65,7 @@ export default class DialogWindow extends Component {
                 'Content-Type': 'application/json'
               },
               method: "POST",
-              body: JSON.stringify({title: this.state.value, userId: '5a031a0745df831aae3ad5e0'})
+              body: JSON.stringify({title: this.state.value, userId: '5a09ab238affaa50eb225fb3'})
             }).then((res) => {
             this.handleClose()
             this.loadLists()

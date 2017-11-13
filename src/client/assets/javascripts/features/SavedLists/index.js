@@ -18,7 +18,7 @@ export default class SavedLists extends Component {
   }
 
   loadLists() {
-    let lists = [fetch(baseUrl+'/api/lists/5a031a0745df831aae3ad5e0').catch((err) => console.log('fetf: ', err))]
+    let lists = [fetch(baseUrl+'/api/lists').catch((err) => console.log('fetf: ', err))]
     this.getPromiseData(lists).then(res => {
       this.setState({lists: res.reduce((a, b) => [...a, ...b], [])})
     })

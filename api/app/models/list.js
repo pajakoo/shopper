@@ -1,9 +1,9 @@
 var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 var ItemSchema = require('./ItemSchema')
-var User = require('./user')
 
 var ListSchema = new Schema({
+  _id: Schema.Types.ObjectId,
   title: String,
   creator: { type: Schema.Types.ObjectId, ref: 'User' },
   shared:[{ type: Schema.Types.ObjectId, ref: 'User' }],

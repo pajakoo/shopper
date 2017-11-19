@@ -21,6 +21,7 @@ class CheckBox extends React.Component {
         checked={this.state.checked}
         onClick={ () => {
           console.log(this.state)
+          let token = localStorage.getItem('token')
           let newItems = this.props.items.map( (x) => {
             if( x._id === this.props.currentItem._id){
               x.completed = !this.state.checked
@@ -32,7 +33,8 @@ class CheckBox extends React.Component {
             {
               headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'x-access-token': token
               },
               method: "PUT",
               body: JSON.stringify({items: newItems})
@@ -54,7 +56,8 @@ export default class Items extends React.Component {
       status: 'unknown',
       loading: false,
       items: [],
-      name: ''
+      name: '',
+      token: localStorage.getItem('token')
     }
 
     /*//Here ya go
@@ -77,7 +80,12 @@ export default class Items extends React.Component {
   }
 
   loadItems() {
-    let items = [fetch(baseUrl + '/api/items/' + this.props.params.list_id).catch((err) => console.log('fetf: ', err))]
+
+    let items = [fetch(baseUrl + '/api/items/' + this.props.params.list_id,{
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json', 'x-access-token': this.state.token
+      }}).catch((err) => console.log('fetf: ', err))]
     getPromiseData(items).then(res => {
       this.setState({items: res.reduce((a, b) => [...a, ...b], [])})
     })
@@ -105,7 +113,8 @@ export default class Items extends React.Component {
                           {
                             headers: {
                               'Accept': 'application/json',
-                              'Content-Type': 'application/json'
+                              'Content-Type': 'application/json',
+                              'x-access-token': this.state.token
                             },
                             method: "PUT"
                           }).then((res1) => {
@@ -134,7 +143,8 @@ export default class Items extends React.Component {
                   {
                     headers: {
                       'Accept': 'application/json',
-                      'Content-Type': 'application/json'
+                      'Content-Type': 'application/json',
+                      'x-access-token': this.state.token
                     },
                     method: "POST",
                     body: JSON.stringify({name: this.state.name, completed: false})

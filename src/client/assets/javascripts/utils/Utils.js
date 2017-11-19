@@ -6,10 +6,15 @@ var api = {
   //baseUrl: 'https://10.10.0.119:55555',
   //baseUrl: 'https://shopper.openode.io',
   //baseUrl: 'http://10.10.0.119:8080',
-  baseUrl: 'http://10.10.0.160:8080',
-  //baseUrl: 'http://87.126.166.28:8080',
+  //baseUrl: 'http://10.10.0.160:8080',
+  baseUrl: 'http://87.126.166.28:8080',
   //baseUrl: 'http://192.168.0.2:8080',
+  // baseUrl: 'http://127.0.0.1:9000',
 
+  auth: function( x ){ return {}},
+  signIn: function( x ){ return {}},
+  passwordUpdate: function( x ){ return {}},
+  createEmailPassword: function( x ){ return {}},
   getPromiseData: function( x ){
     return new Promise((resolve, reject) => {
       Promise.all(x)

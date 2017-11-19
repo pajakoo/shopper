@@ -54,6 +54,7 @@ export default class DialogWindow extends Component {
     />]
 
     if (this.state.dialogType == DIALOG_TYPES.CREATE) {
+      let token = localStorage.getItem('token')
       actions.push(<FlatButton
         label="Ok"
         primary={true}
@@ -62,10 +63,11 @@ export default class DialogWindow extends Component {
             {
               headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'x-access-token': token
               },
               method: "POST",
-              body: JSON.stringify({title: this.state.value, userId: '5a09ab238affaa50eb225fb3'})
+              body: JSON.stringify({title: this.state.value})
             }).then((res) => {
             this.handleClose()
             this.loadLists()

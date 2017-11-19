@@ -46,7 +46,11 @@ const Logged = (props) => (
     }}/>
     <MenuItem primaryText="Rename"/>
     <MenuItem onClick={ () => browserHistory.push('/map/'+props.list_id) }>Location Remainder</MenuItem>
-    <MenuItem primaryText="Sign out"/>
+    <MenuItem onClick={ () => {
+        localStorage.removeItem('token')
+        console.log('Sign out') }}
+      primaryText="Sign out"
+    />
   </IconMenu>
 )
 
@@ -100,7 +104,7 @@ export default class Sidebar extends React.Component {
                       <IconButton><Menu  /> </IconButton>}
                   iconElementRight={this.state.logged ?
                     <Logged list_id={this.state.listId} handleOpen={this.props.handleOpen.bind(this)}/> :
-                    <LoginButton />}
+                    <LoginButton  />}
           />
           <Drawer
             onRequestChange={(open) => this.setState({open})}

@@ -33,8 +33,12 @@ export default class Users extends React.Component {
   }
 
   componentDidMount() {
-
-    let users = [fetch(baseUrl+'/api/users').catch((err) => console.log('fetf: ',err))]
+    var token = localStorage.getItem('token')
+    let users = [fetch(baseUrl+'/api/users',{
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json', 'x-access-token': token
+      }}).catch((err) => console.log('fetf: ',err))]
     this.getPromiseData(users).then( res => {
       this.setState({users:res.reduce((a,b)=>[...a,...b],[]) })
     })

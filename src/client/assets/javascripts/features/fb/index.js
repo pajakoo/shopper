@@ -1,6 +1,6 @@
 import React from 'react'
 import {browserHistory} from 'react-router'
-import {baseUrl} from '../../utils/Utils'
+import {baseUrl, getPromiseData} from '../../utils/Utils'
 
 export default class Login extends React.Component {
 
@@ -37,28 +37,42 @@ export default class Login extends React.Component {
         if (response.status === 'connected') {
           let uid = response.authResponse.userID;
           let accessToken = response.authResponse.accessToken;
-          //fetch('https://graph.facebook.com/me?fields=id&access_token='+accessToken).then((res) => console.log(res.json()) );
-          console.log(uid);
+          // https://graph.facebook.com/oauth/client_code?access_token=...&client_secret=...&redirect_uri=...&client_id=...
+          // fetch('https://graph.facebook.com/me?fields=id&access_token='+accessToken).then((res) => console.log(res.json()) );
+
+          // This new long-lived access token will expire on January 16th, 2018:
+          // EAASyxrEWJTIBAPJ65xpGe74hkzbwqE7mGC1V4UXG1Y6YPTVermRjgrhHD85IQH8xeMvbC4xuGFNng9cLMCzskzQ
           /!* make the API call *!/
           FB.api(
             "/"+uid,
             function (response) {
+              console.log(accessToken)
+              console.log('gg:', accessToken==='EAASyxrEWJTIBABOIDVCIxciTis7qtPPXQbLYxdnnnNOpICyjusmPuWZBrMIIXv5e6wr1Vr8RQm7VRZBDgcVA1xhc5UbaAzv8F8aOAudsA1CHz6DU3RtXEZBfw29XA9gLAZCtzZABG8wbmvtKXPY6mST5BiQozWLdt6KGk8mw5BwThUc3sqAawbU76Px8DJtyUN7pUz8kcuQZDZD')
               if (response && !response.error) {
-                console.log('eek:',response)
-                fetch(baseUrl+"/api/users/",
-                  {
-                    headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json'
-                    },
-                    method: "POST",
-                    body: JSON.stringify({name:response.name})
-                  }).then((res) => {console.log(res.json(), 'is saved');browserHistory.push('/users')})
+                fetch(baseUrl + '/api/users', {
+                  headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json','x-access-token': accessToken
+                  },
+                  method: "POST",
+                  body: JSON.stringify({name: response.name, type: 'create_fb_user'})
+                }).then((response) => response.json())
+                  .then((data) => {
+                    localStorage.setItem('token', data.token)
+                    browserHistory.push('/users')
+                  })
+                  .catch((err) => {
+                    console.log('fetf: ', err)
+                  })
 
-                // fetch('http://0.0.0.0:8080/api/users/'+response.name).then((res) => console.log(res.json(), 'is saved'));
+                /*getPromiseData(user).then( res => {
+                  localStorage.setItem('token', res[0].token)
+                  browserHistory.push('/users')
+                })*/
+
               }
             }
-          );
+          )
         }
         else {
           FB.login();

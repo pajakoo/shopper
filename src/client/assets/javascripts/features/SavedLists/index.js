@@ -18,7 +18,12 @@ export default class SavedLists extends Component {
   }
 
   loadLists() {
-    let lists = [fetch(baseUrl+'/api/lists').catch((err) => console.log('fetf: ', err))]
+    var token = localStorage.getItem('token')
+    let lists = [fetch(baseUrl+'/api/lists',{
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json', 'x-access-token': token
+      }}).catch((err) => console.log('fetf: ', err))]
     this.getPromiseData(lists).then(res => {
       this.setState({lists: res.reduce((a, b) => [...a, ...b], [])})
     })

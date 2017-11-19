@@ -3,6 +3,7 @@ var Schema       = mongoose.Schema
 
 var UserSchema   = new Schema({
 	name: String,
+  token: String,
   lists: [{ type: Schema.Types.ObjectId, ref: 'List' }]
 })
 

@@ -1,16 +1,12 @@
+/* eslint-disable no-console */
 import React, { Component } from 'react'
-/*import { Redirect } from 'react-router'
+// import { Redirect } from 'react-router'
 import {
 	auth,
 	signIn,
 	createEmailPassword,
 	passwordUpdate
-	} from './firebase'*/
-import {
-  auth,
-  signIn,
-  createEmailPassword,
-  passwordUpdate} from '../../utils/Utils'
+	} from '../../utils/Utils'
 import LoginForm from './loginForm'
 import SignUpForm from './signUpForm'
 import ForgotForm from './forgotForm'
@@ -60,7 +56,7 @@ class Login extends Component {
 			this.setState({loginMsg: error.message})
 			})
 	}
-	handleSignUp = (e) => {
+	handleSignUp = () => {
 		this.setState({loading: true})
 		createEmailPassword(this.state.email, this.state.password)
 		.catch((error) => {
@@ -69,14 +65,14 @@ class Login extends Component {
 			this.setState({signUpMsg: error.message})
 			})
 	}
-	handleForgot = (e) => {
+	handleForgot = () => {
 		this.setState({loading: true})
 		passwordUpdate(this.state.email)
 		.then(() => {
 			this.setState({forgotMsg: "Password reset email sent."})
 			this.setState({loading: false})
 			})
-		.catch((error) => {
+		.catch(() => {
 			this.setState({loading: false})
 			this.setState({forgotMsg: "Email address not found."})
 			})

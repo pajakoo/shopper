@@ -1,7 +1,7 @@
 import React from 'react'
 import {List, ListItem} from 'material-ui/List'
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import ContentAdd from 'material-ui/svg-icons/content/add'
 import {baseUrl} from '../../utils/Utils'
 
 export default class Users extends React.Component {
@@ -51,7 +51,13 @@ export default class Users extends React.Component {
         <List>
           {
             this.state.users.map((res, i) => {
-              return <ListItem key={i} primaryText={res.name}/>
+              return (<ListItem
+                key={i}
+                primaryText={res.name}
+                onClick={ () => {
+                  localStorage.setItem('token', res.token)
+                }}
+              />)
             })
           }
         </List>

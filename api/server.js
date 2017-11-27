@@ -67,24 +67,11 @@ var router = express.Router()
 
 // middleware to use for all requests
 router.use(function(req, res, next) {
-  // https://thewayofcode.wordpress.com/2013/11/25/how-to-secure-your-http-api-endpoints-using-facebook-as-oauth-provider/
-  var _token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token']
-  var createUser = (req.body && req.body.type) || (req.query && req.query.type)
+  next()
+  /*var _token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token']
 
-  // console.log('token:', _token)
-
-  var rp = require('request-promise')
-  rp('https://graph.facebook.com/debug_token?input_token=1322466351129906%7CcnjTtOhDthnzibuOfjCslwedCXc&access_token=' + _token).
-  then( ( fbresponse ) => {
-    // console.log('fbresponse:',JSON.parse(fbresponse))
-    if(!JSON.parse(fbresponse).is_valid) return res.status(401).json({error: 'Token not valid'})
-  }).catch((err) => console.log(err))
-
-  if( createUser != 'create_fb_user'  ){
-
-
-
-    User.findOne({ token: _token }, function(err, user) {
+  if( createUser != 'fb_login'  ) {
+    User.findOne({token: _token}, function (err, user) {
       if (err) {
         // user not found
         return res.status(401).json({error: 'User issue'})
@@ -92,22 +79,50 @@ router.use(function(req, res, next) {
 
       if (!user) {
         // incorrect username
-        return res.status(401).json({error: 'User issue'})
+        return res.status(401).json({error: 'No user with such token'})
       }
 
-      /*if (!user.validPassword(password)) {
+      /!*if (!user.validPassword(password)) {
        // incorrect password
        res.status(401).json({error:'User issue'})
-       }*/
+       }*!/
 
       // User has authenticated OK
       return next()
     })
-
   } else {
-    next()
-  }
 
+  }*/
+  // https://www.facebook.com/FacebookforDevelopers/videos/10152795636318553/?type=2&theater   tutorial at:   https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow/
+  // https://thewayofcode.wordpress.com/2013/11/25/how-to-secure-your-http-api-endpoints-using-facebook-as-oauth-provider/
+
+
+
+  /*var _code = (req.body && req.body.code) || (req.query && req.query.code) || req.headers['x-access-token']
+  console.log('_code', _code)
+  var rp = require('request-promise')
+  rp('https://graph.facebook.com/v2.11/oauth/access_token?client_id=1322466351129906&redirect_uri=http://localhost:3000/login&client_secret=' + _code).
+    then((fbresponse) => {
+      console.log('fb: ', JSON.parse(fbresponse)) //fbresponse.access_token
+      rp('https://graph.facebook.com/v2.11/me?access_token=EAASyxrEWJTIBAGOzZBrSdImsZCGZBoX7kWyA128GDYITlmk5MZBi2RX9ZCU7GTW6ct29FPvkfMAe9HJG2iZCeRKr6QlyTgJnOqocpx9WRB21d5QuNesGC0l4kCvOxjCd06ppWxxZBuNV7mtMopgzc54pTWjn4TYxX5FawnKRHPzYokS86ZASeJbZBVMYOYjHIjQXeMvzHpu1XgQZDZD').
+        then((fbresponse) => {
+          next()
+        })
+    })*/
+
+/*
+  var createUser = (req.body && req.body.type) || (req.query && req.query.type)
+    var rp = require('request-promise')
+    rp('https://graph.facebook.com/debug_token?input_token=1322466351129906%7CcnjTtOhDthnzibuOfjCslwedCXc&access_token=' + _token).
+    then( ( fbresponse ) => {
+      if(!JSON.parse(fbresponse).data.is_valid) {
+        return res.status(401).json({error: 'Token not valid'})
+      } else {
+        return next()
+      }
+    }).catch((err) =>
+      res.status(401).json({error: 'Catch Token not valid: ' + err})
+    )*/
 })
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function(req, res) {
@@ -116,7 +131,7 @@ router.get('/', function(req, res) {
 
 // on routes that end in /users
 // ----------------------------------------------------
-router.route('/error', (e) => console.log('gg:',e)).get( (req, res) => res.status(401).json({"error":"Fuck you bitch!"}))
+router.route('/error', (e) => console.log('gg:',e)).get( (req, res) => res.status(401).json({"error":"Error PAGE"}))
 router.route('/users')
 	// create a user (accessed at POST http://localhost:8080/users)
 	.post(function(req, res) {
@@ -126,7 +141,7 @@ router.route('/users')
 		var user = new User()		// create a new instance of the User model
     // set the users name (comes from the request)
 
-    if( createUser != 'create_fb_user'  ) {
+    if( createUser != 'fb_login'  ) {
       crypto.randomBytes(48, function (err, buffer) {
         user.token = buffer.toString('hex')
         user.name = req.body.name
@@ -138,12 +153,86 @@ router.route('/users')
         })
       })
     } else {
+      let _fbId = req.body.fbId
+
+      if(!req.body.email) console.log('*** Proveide email popup ***', req.body.email)
+
+      User.findOne({fbId: _fbId}, function(err, fbuser) {
+        if (err) {
+          // user not found
+          return res.status(401).json({error: 'User issue'})
+        }
+        if(!fbuser) {
+          user.token = _token
+          user.fbId = _fbId
+          user.name = req.body.name
+          user.email = req.body.email
+          user.save(function (err) {
+            if (err)
+              res.send(err)
+
+            res.json(user)
+          })
+        } else {
+          User.findOneAndUpdate(
+            {fbId: _fbId},
+            {$set: {token: _token}},
+            function (err, documents) {
+              res.send({ error: err, affected: documents })
+            }
+          )
+          console.log('fbuser: ',fbuser, ' updated')
+          res.json(fbuser)
+        }
+
+      })
+
+        // https://graph.facebook.com/v2.11/me?access_token=&debug=all&fields=id%2Cname%2Cemail&format=json&method=get&pretty=0&suppress_http_code=1
+      //DEBUGG // https://graph.facebook.com/me?access_token=EAASyxrEWJTIBAAdZCK2RLAYWvAyyF2eBuz71pVjD3ZC8t6mVbyPaZAl5AUVvEisYKt4LTjaivyXFKgeZBcVoUhaZBg1foicr62Ho3ay8LMiAfFQV3B7BLaCNpycLqAxXUeuEw9gPDVLQGne6rlDpEXEFSuZBzZAzI8rnZB18yARTZAqEONfd2AfuopBUMbOFOL6WZA77EPAyOW7gZDZD&debug=all&fields=id%2Cname%2Cemail&format=json&method=get&pretty=0&suppress_http_code=1
+
+      /*var rp = require('request-promise')
+      rp('https://graph.facebook.com/v2.11/me?access_token='+_token+'&debug=all&fields=id%2Cname%2Cemail&format=json&method=get&pretty=0&suppress_http_code=1').
+        then( ( fbresponse ) => {
+        //console.log(fbresponse)
+
+        let _fbId = JSON.parse(fbresponse).id
+
+        User.findOne({fbId: _fbId}, function (err, fbuser) {
+          if (err)
+            res.send(err)
+
+          if(!fbuser){
+            user.token = _token
+            user.fbId = JSON.parse(fbresponse).id
+            user.name = JSON.parse(fbresponse).name
+            user.save(function (err) {
+              if (err)
+                res.send(err)
+
+              res.json(user)
+            })
+          } else {
+
+            User.findOneAndUpdate(
+              {fbId: _fbId},
+              {$set: {token: _token}},
+              function (err, documents) {
+                res.send({ error: err, affected: documents })
+              }
+            )
+            console.log('fbuser: ',fbuser, ' updated')
+            res.json(fbuser)
+          }
+        })
+
+      }).catch((err) => console.log(err))*/
 
       // https://graph.facebook.com/oauth/client_code?access_token='+_token+'&client_secret=18341a34544c3cd58c99b1b40f98050c&redirect_uri=..../&client_id=1322466351129906
       //rp('https://graph.facebook.com/debug_token?input_token='+_token+'&access_token=EAASyxrEWJTIBAFwQBKbgAwdMETpGxC9kYHKXtsunDCm90Sn1plSKAWFkmPKkZBk29MDnUZBqpMMir4rZAgkA8S9M4hmm1EoGm8ZC5ZBQ0SsXd1ZCcHcCFDVnS91lGaEzUMc809MdgqLZB3jmUfMUvHCpgye9NnRLyUVJS2EtzKIePODd76SToc8jeFkj9eDoaQZD').
       //     rp('https://graph.facebook.com/oauth/client_code?access_token=1322466351129906%7CcnjTtOhDthnzibuOfjCslwedCXc&client_secret=18341a34544c3cd58c99b1b40f98050c&redirect_uri=http://localhost:3000/&client_id=1322466351129906').
       //https://graph.facebook.com/debug_token?input_token=1322466351129906%7CcnjTtOhDthnzibuOfjCslwedCXc&access_token=EAASyxrEWJTIBAKQTHRswXzIXMAZA0gzTWaaSEbiydLfrkKOEHd99S45cqvdHjZBUXXWryhQCq9YFThSVQiNf9BVlDrz3vqYFsglG8DMbl6FxBrbMg6JLHIZCbQplmyCj38mh2yvaonvdHTJKsbjkef6JMyE6ZCct6GydAKhQTV4ZBMuf3BVjZCU8tD6vGVPOD6SQkZBzTKZAIgZDZD
-        var rp = require('request-promise')
+
+      /*var rp = require('request-promise')
           rp('https://graph.facebook.com/debug_token?input_token=1322466351129906%7CcnjTtOhDthnzibuOfjCslwedCXc&access_token=' + _token).
           then( ( fbresponse ) => {
             console.log('fbresponse:',JSON.parse(fbresponse))
@@ -155,7 +244,7 @@ router.route('/users')
 
               res.json(user)
             })
-          }).catch((err) => console.log(err))
+          }).catch((err) => console.log(err))*/
     }
 	})
 	// get all the users (accessed at GET http://localhost:8080/api/users)
@@ -168,9 +257,104 @@ router.route('/users')
 		})
 	})
 
-// on routes that end in /users/:user_id
+//  friends
 // ----------------------------------------------------
-router.route('/users/:user_id')
+router.route('/share').put( (req, res) => {
+  var _token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token']
+
+  User.findById({_id:req.body.friendId}, function (err, user) {
+    if (err)
+      res.send(err)
+
+      user.shared.push(req.body.listId)
+      user.save(function (err) {
+        if (err)
+          res.send(err)
+
+        User.findById({_id:req.body.friendId}).populate('shared').exec(function (err, lists) {
+          if (err)
+            res.send(err)
+
+          res.json(lists)
+          console.log('The shared is %s', lists)
+        })
+      })
+  })
+})
+
+router.route('/friends').
+get(function (req, res) {
+  var _token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token']
+
+  User.findOne({token: _token}).populate('friends').exec(function (err, user) {
+    if (err)
+      res.send(err)
+
+    res.json(user.friends)
+    console.log('The friends for %s', user.friends)
+  })
+
+}).
+put(function (req, res) {
+  var _token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token']
+
+  User.findOne({token: _token}, function (err, user) {
+    if (err)
+      res.send(err)
+
+    User.findById({_id: req.body.friendId}, function (err, friend) {
+      if (err)
+        res.send(err)
+
+      user.friends.push(friend._id)
+      user.save(function (err) {
+        if (err)
+          res.send(err)
+
+        User.findOne({token: _token}).populate('friends').exec(function (err, friends) {
+          if (err)
+            res.send(err)
+
+          res.json(friends)
+          console.log('The friend is %s', friends)
+        })
+      })
+    })
+  })
+})
+
+router.route('/friends/:email')
+  .get(function(req, res) {
+    User.findOne({email: req.params.email}, function(err, friend) {
+      if (err)
+        res.send(err)
+
+      res.json(friend)
+    })
+
+  })
+
+
+      /*var list = new List({
+        _id: listId,
+        title: req.body.title,
+        creator: user._id
+      })
+      list.save(function (err) {
+        if (err)
+          res.send(err)
+
+        List.findOne({_id: list._id}).populate('creator').exec(function (err, list) {
+          if (err)
+            res.send(err)
+
+          res.json(list)
+          console.log('The author is %s', list.creator.name)
+        })
+
+      })
+*/
+  router.route('/users/:user_id')
 
 	// get the user with that id
 	.get(function(req, res) {
@@ -368,15 +552,16 @@ router.route('/lists')
   })
   .get(function (req, res) {
     var _token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token']
+    //console.log('_token: ',_token)
     User.
     findOne({token:_token}).
-    populate('lists').
+    populate('lists shared').
     exec(function (err, user) {
       if (err)
         res.send(err)
 
-      res.json(user.lists)
-      console.log('The lists for %s', user.lists)
+      res.json(user)
+      console.log('The lists for %s', user)
     })
 
     /*

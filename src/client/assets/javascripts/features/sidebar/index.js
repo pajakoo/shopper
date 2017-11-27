@@ -48,7 +48,8 @@ const Logged = (props) => (
     <MenuItem onClick={ () => browserHistory.push('/map/'+props.list_id) }>Location Remainder</MenuItem>
     <MenuItem onClick={ () => {
         localStorage.removeItem('token')
-        console.log('Sign out') }}
+        browserHistory.push('/login')
+    }}
       primaryText="Sign out"
     />
   </IconMenu>
@@ -89,13 +90,13 @@ export default class Sidebar extends React.Component {
     return (
       <MuiThemeProvider>
         <div>
-          <Toggle
+          {/*<Toggle
             label="Logged"
             defaultToggled={false}
             onToggle={this.handleChange}
             labelPosition="right"
             style={{margin: 20}}
-          />
+          />*/}
           <AppBar onLeftIconButtonTouchTap={this.handleToggle}
                   title={this.state.listName}
                   iconElementLeft={
@@ -117,7 +118,10 @@ export default class Sidebar extends React.Component {
             </div>
 
             <Notifier />
-            <ListItem onClick={ () => browserHistory.push('/users') }>Users</ListItem>
+            <ListItem onClick={ () => {
+              browserHistory.push('/users')
+              this.handleToggle()
+            }}>Users</ListItem>
 
             <Divider />
             <ListItem
@@ -132,6 +136,8 @@ export default class Sidebar extends React.Component {
               ref={(sidebar) => {
                 this.sidebar = sidebar
               }}/>
+
+            <Divider />
           </Drawer>
         </div>
       </MuiThemeProvider>

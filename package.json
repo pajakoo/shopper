@@ -95,7 +95,6 @@
   },
   "dependencies": {
     "autoprefixer": "6.4.1",
-    "axios": "0.16.1",
     "babel-runtime": "6.11.6",
     "can-use-dom": "^0.1.0",
     "classnames": "2.2.5",
@@ -107,9 +106,8 @@
     "react": "15.4.0",
     "react-display-name": "^0.2.0",
     "react-dom": "15.4.0",
+    "react-form-validator-core": "0.1.1",
     "react-hot-loader": "3.0.0-beta.2",
-    "react-native-maps": "^0.12.4",
-    "react-native-material-ui": "1.11.1",
     "react-redux": "4.4.5",
     "react-router": "2.7.0",
     "react-router-redux": "4.0.5",

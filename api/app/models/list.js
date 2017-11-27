@@ -6,7 +6,6 @@ var ListSchema = new Schema({
   _id: Schema.Types.ObjectId,
   title: String,
   creator: { type: Schema.Types.ObjectId, ref: 'User' },
-  shared:[{ type: Schema.Types.ObjectId, ref: 'User' }],
   items: [ItemSchema],
   remainder: String,
   placeCoordinates: {

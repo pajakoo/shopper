@@ -9,7 +9,8 @@ export default class SavedLists extends Component {
     super(props)
     this.state = {
       selected:'',
-      lists: []
+      lists:[],
+      shared:[]
     }
   }
 
@@ -19,23 +20,33 @@ export default class SavedLists extends Component {
 
   loadLists() {
     var token = localStorage.getItem('token')
-    let lists = [fetch(baseUrl+'/api/lists',{
+    fetch(baseUrl+'/api/lists',{
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json', 'x-access-token': token
-      }}).catch((err) => console.log('fetf: ', err))]
-    this.getPromiseData(lists).then(res => {
-      this.setState({lists: res.reduce((a, b) => [...a, ...b], [])})
-    })
+      }}).
+    then( (x) =>  x.json() ).
+    then( (res) => {
+      this.setState({lists:res.lists})
+      this.setState({shared:res.shared})
+
+    }).
+    catch((err) => console.log('fetf: ', err))
+
+    /*this.getPromiseData(user).then(res => {
+      console.log(res)
+      this.setState({user: res.reduce((a, b) => [...a, ...b], [])})
+      // this.setState({shared: res.shared.reduce((a, b) => [...a, ...b], [])})
+    })*/
   }
 
   getPromiseData(x) {
     return new Promise((resolve, reject) => {
       Promise.all(x)
-        .then(res => {
-          return res.map(data => data.json())
+        .then((res) => {
+          return res.map((data) => data.json())
         })
-        .then(res => {
+        .then((res) => {
           Promise.all(res).then(resolve)
         }).catch(reject)
     })
@@ -44,7 +55,17 @@ export default class SavedLists extends Component {
   render() {
     let arr = this.state.lists.map(function (res, i) {
       return (<ListItem
-        onClick={ () => {
+        onClick={() => {
+          this.props.currentList({title:res.title, id: res._id})
+          browserHistory.push('/items/'+res._id)
+        }}
+        key={i}
+        primaryText={res.title}/>)
+    }.bind(this))
+
+    let arr2 = this.state.shared.map(function (res, i) {
+      return (<ListItem
+        onClick={() => {
           this.props.currentList({title:res.title, id: res._id})
           browserHistory.push('/items/'+res._id)
         }}
@@ -56,9 +77,14 @@ export default class SavedLists extends Component {
       <List>
         <ListItem
           primaryText="My Lists"
-          initiallyOpen={true}
-          primaryTogglesNestedList={true}
+          initiallyOpen
+          primaryTogglesNestedList
           nestedItems={arr}
+        /><ListItem
+          primaryText="Shared Lists"
+          initiallyOpen
+          primaryTogglesNestedList
+          nestedItems={arr2}
         />
       </List>
     )

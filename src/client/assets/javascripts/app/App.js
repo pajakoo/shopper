@@ -33,6 +33,8 @@ export default class App extends Component {
     this.setState({currentListName: p.title})
     this.setState({currentListId: p.id})
     this.sidebar.changeListItems(p)
+    console.log('app: ', this.state.currentListId)
+
   }
 
   render() {
@@ -57,7 +59,7 @@ export default class App extends Component {
               handleOpen: this.handleOpen.bind(this),
             })
           }
-          <BottomNav />
+          <BottomNav currentListId={this.state.currentListId} />
         </div>
       </MuiThemeProvider>
     )

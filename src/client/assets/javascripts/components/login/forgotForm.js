@@ -1,7 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
 import {
-    withStyles,
     Button,
     IconButton,
     TextField,
@@ -9,41 +7,8 @@ import {
     Dialog,
     DialogTitle,
     DialogContent
-    } from 'material-ui';
-import CloseIcon from 'material-ui-icons/Close';
-import Slide from 'material-ui/transitions/Slide';
-
-const styles = theme => ({
-    flex: {
-        flex: 1,
-        textAlign: 'right',
-        paddingBottom: 0,
-        marginBottom: '-18px',
-    },
-    container: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-    },
-    form: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        paddingRight: '18px',
-        paddingLeft: '18px',
-    },
-    signUpBottom: {
-        height: '60px',
-        marginTop: '16px',
-        width: '50%'
-    },
-    errorMsg: {
-        color: '#FF5722',
-        textAlign: 'center',
-        width: '100%'
-	},
-});
-
+    } from 'material-ui'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 
 const ForgotForm = (props) => {
     return (
@@ -52,14 +17,13 @@ const ForgotForm = (props) => {
             ignoreBackdropClick={true}
             open = {props.open}
             onRequestClose={props.close}
-            transition={<Slide direction="up" />}
         >
         <DialogTitle className={props.classes.flex}>
             <IconButton color="contrast" onClick={props.close} aria-label="Close">
                 <CloseIcon />
               </IconButton></DialogTitle>
           <DialogContent className={props.classes.container}>
-          <form className={props.classes.form} noValidate autoComplete="off" onSubmit={e => { e.preventDefault(); }}>
+          <form className={props.classes.form} noValidate autoComplete="off" onSubmit={e => { e.preventDefault() }}>
 				<TextField
 					id="email"
 					label="Email"
@@ -76,11 +40,7 @@ const ForgotForm = (props) => {
             </DialogContent>
         </Dialog>
       </div>
-    );
+    )
 }
 
-ForgotForm.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default (withStyles(styles)(ForgotForm));
+export default ForgotForm

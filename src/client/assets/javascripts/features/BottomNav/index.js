@@ -35,8 +35,7 @@ export default class BottomNav extends React.Component {
     open:false,
     time:null,
     date: null
-  };
-
+  }
   select = (index) => this.setState({selectedIndex: index});
 
   componentDidMount() {
@@ -88,7 +87,7 @@ export default class BottomNav extends React.Component {
         keyboardFocused={true}
         onClick={this.handleClose}
       />,
-    ];
+    ]
     return (
       <div>
       <Paper zDepth={1}>
@@ -101,7 +100,12 @@ export default class BottomNav extends React.Component {
           <BottomNavigationItem
             label="Share"
             icon={share}
-            onClick={() => this.select(1)}
+            // onClick={() => this.select(1)}
+            onClick={ () => {
+              this.select(1)
+              console.log('BottomNavigationItem:', this.props.currentListId)
+              browserHistory.push('/sharing/'+this.props.currentListId)
+            } }
           />
           <BottomNavigationItem
             label="Time"
@@ -111,7 +115,7 @@ export default class BottomNav extends React.Component {
           <BottomNavigationItem
             label="Location"
             icon={nearbyIcon}
-            onClick={ () => browserHistory.push('/map/'+props.list_id) }
+            onClick={ () => browserHistory.push('/map/'+this.props.currentListId) }
             // onClick={() => this.select(3)}
           />
         </BottomNavigation>

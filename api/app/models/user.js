@@ -2,9 +2,14 @@ var mongoose     = require('mongoose')
 var Schema       = mongoose.Schema
 
 var UserSchema   = new Schema({
+  fbId: String,
 	name: String,
+	email: String,
   token: String,
+  friends:[{ type: Schema.Types.ObjectId, ref: 'User' }],
+  shared:[{ type: Schema.Types.ObjectId, ref: 'List' }],
   lists: [{ type: Schema.Types.ObjectId, ref: 'List' }]
+
 })
 
 module.exports = mongoose.model('User', UserSchema)

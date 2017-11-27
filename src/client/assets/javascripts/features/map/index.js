@@ -9,7 +9,7 @@ import {
   withGoogleMap,
   GoogleMap,
   Marker,
-  InfoWindow,
+  // InfoWindow,
 } from "./lib"
 
 import { connect } from 'react-redux'
@@ -32,25 +32,25 @@ const ClosureListenersExampleGoogleMap = withGoogleMap(props => (
 ))
 
 function generateInitialMarkers() {
-  const southWest = new google.maps.LatLng(-31.203405, 125.244141);
-  const northEast = new google.maps.LatLng(-25.363882, 131.044922);
+  const southWest = new google.maps.LatLng(-31.203405, 125.244141)
+  const northEast = new google.maps.LatLng(-25.363882, 131.044922)
 
-  const lngSpan = northEast.lng() - southWest.lng();
-  const latSpan = northEast.lat() - southWest.lat();
+  const lngSpan = northEast.lng() - southWest.lng()
+  const latSpan = northEast.lat() - southWest.lat()
 
-  const markers = [];
+  const markers = []
   for (let i = 0; i < 5; i++) {
     const position = new google.maps.LatLng(
       southWest.lat() + latSpan * Math.random(),
       southWest.lng() + lngSpan * Math.random()
-    );
+    )
     markers.push({
       position,
       content: `This is the secret message`.split(` `)[i],
       showInfo: false,
-    });
+    })
   }
-  return markers;
+  return markers
 }
 
 /*
@@ -101,9 +101,9 @@ export default class Map extends Component {
     if (navigator && navigator.geolocation) {
       this.geoPromise = makeCancelable(
         new Promise((resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(resolve, reject);
+          navigator.geolocation.getCurrentPosition(resolve, reject)
         })
-      );
+      )
 
       /*this.geoPromise.promise.then(pos => {
         const coords = pos.coords
@@ -123,13 +123,13 @@ export default class Map extends Component {
             lng: coords.longitude
           }
         })
-      }).catch(e => e);*/
+      }).catch(e => e)*/
     }
 
   }
 
-  handleMarkerClick = this.handleMarkerClick.bind(this);
-  handleCloseClick = this.handleCloseClick.bind(this);
+  handleMarkerClick = this.handleMarkerClick.bind(this)
+  handleCloseClick = this.handleCloseClick.bind(this)
   handleMarkerClick(targetMarker) {
     this.setState({
       markers: this.state.markers.map(marker => {
@@ -137,11 +137,11 @@ export default class Map extends Component {
           return {
             ...marker,
             showInfo: true,
-          };
+          }
         }
-        return marker;
+        return marker
       }),
-    });
+    })
   }
   handleCloseClick(targetMarker) {
     this.setState({
@@ -150,11 +150,11 @@ export default class Map extends Component {
           return {
             ...marker,
             showInfo: false,
-          };
+          }
         }
-        return marker;
+        return marker
       }),
-    });
+    })
   }
 
   render() {
@@ -175,7 +175,7 @@ export default class Map extends Component {
         currentLocation={this.state.currentLocation}
         listId={this.props.params.list_id}
       />
-    );
+    )
   }
 }
 

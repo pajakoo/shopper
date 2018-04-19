@@ -1,20 +1,19 @@
 import React, {Component} from 'react'
-import {View, ScrollView, ToastAndroid, Platform, Text} from 'react-native'
-import {ThemeProvider, ListItem, Button, Toolbar} from 'react-native-material-ui'
+import {View, AsyncStorage, ScrollView, ToastAndroid, Platform, Text} from 'react-native'
+import { ThemeProvider, ListItem, Button, Toolbar} from 'react-native-material-ui'
 import DrawerLayout from 'react-native-drawer-layout-polyfill'
 import cyanTheme from 'react-native-material-ui/src/styles/themes/cyan'
 import { BottomNavigation } from 'react-native-material-ui'
 import {baseUrl} from '../Utils'
+import axios from 'axios'
+// import { LoginManager } from 'react-native-fbsdk'
 
 export default class Home extends Component {
-
-  static navigationOptions = {
-    title: 'HomeScreen',
-  }
 
   constructor(props) {
     super(props)
     this.state = {
+      token:'',
       selected: '',
       lists: [],
       status: 'unknown',
@@ -46,26 +45,41 @@ export default class Home extends Component {
     })
   }
 
+  componentWillMount() {
+    this.loadLists()
+  }
   componentDidMount() {
 
     let users = [fetch(baseUrl+'/api/users').catch((err) => console.log('fetf: ', err))]
-    this.getPromiseData(users).then(res => {
+    this.getPromiseData(users).then( (res) => {
       this.setState({users: res.reduce((a, b) => [...a, ...b], [])})
     })
     this.loadLists()
-
   }
 
   loadLists() {
+    //console.log('TOKEN:', this.state.token)
+    AsyncStorage.getItem("token").then((value) => {
+      this.setState({"token": value})
+      axios({
+        url: baseUrl + '/api/lists',
+        headers: {'x-access-token': value}
+      }).then( res => {
+        this.setState({lists: res.data.lists})
+      }).catch((err) => console.log('fetf: ', err))
+
+    }).done()
+
+    /*
     let lists = [fetch(baseUrl+'/api/lists').catch((err) => console.log('fetf: ', err))]
     this.getPromiseData(lists).then(res => {
       this.setState({lists: res.reduce((a, b) => [...a, ...b], [])})
-    })
+    })*/
   }
 
   render() {
     const { navigate } = this.props.navigation
-
+    let ctx = this
     let navigationView = (
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         {
@@ -82,6 +96,27 @@ export default class Home extends Component {
               key={i}/>)
           })
         }
+        <Button
+          primary
+          text="Create list"
+          onPress={() => {
+            fetch(baseUrl + "/api/lists/",
+              {
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+                  'x-access-token': this.state.token
+                },
+                method: "POST",
+                body: JSON.stringify({title: 'New List'})
+              }).then((res) => {
+              this.loadLists()
+              console.log(res.json(), this.state.value, 'is saved')
+            })
+          }}
+          style={{container: {backgroundColor: '#3b5998'}, text: {color: 'white'}}}
+        />
+
       </View>
     )
 
@@ -93,12 +128,21 @@ export default class Home extends Component {
           drawerPosition={DrawerLayout.positions.Left}
           renderNavigationView={() => navigationView}>
           <View >
+
             <Toolbar
               leftElement="menu"
               onLeftElementPress={this.openDrawer}
               onRightElementPress={(target) => {
                 if(target.index == 3){
                   navigate('Map')
+                }
+                if(target.index == 4){
+                  //LoginManager.getInstance().logOut()
+                  AsyncStorage.removeItem('token')
+                  AsyncStorage.getItem("token").then((value) => {
+                    //console.log(LoginManager.getInstance(), 'zzz token:', value)
+                  }).done()
+                  navigate('Login')
                 }
               }}
               rightElement={{
@@ -116,6 +160,9 @@ export default class Home extends Component {
                       primaryText: res.name,
                     }}
                     onPress={() => {
+                      //console.log('CTX: ',ctx)
+                      ctx.setState({ token: res.token })
+                      ctx.loadLists()
                     }}
                     key={i}/>)
                 })

@@ -1,14 +1,19 @@
-import React, {Component} from 'react'
+import React, {Component, PropTypes} from 'react'
 import {List, ListItem} from 'material-ui/List'
 import {browserHistory} from 'react-router'
 import {baseUrl} from '../../utils/Utils'
+import Paper from 'material-ui/Paper'
 
 export default class SavedLists extends Component {
+
+  static propTypes = {
+    actions: PropTypes.object.isRequired,
+    friends: PropTypes.object.isRequired
+  }
 
   constructor(props) {
     super(props)
     this.state = {
-      selected:'',
       lists:[],
       shared:[]
     }
@@ -53,10 +58,13 @@ export default class SavedLists extends Component {
   }
 
   render() {
+    const { actions } = this.props
+
     let arr = this.state.lists.map(function (res, i) {
       return (<ListItem
         onClick={() => {
-          this.props.currentList({title:res.title, id: res._id})
+          {/*this.props.currentList({title:res.title, id: res._id})*/}
+          actions.selectList(res._id, res.title)
           browserHistory.push('/items/'+res._id)
         }}
         key={i}
@@ -66,7 +74,7 @@ export default class SavedLists extends Component {
     let arr2 = this.state.shared.map(function (res, i) {
       return (<ListItem
         onClick={() => {
-          this.props.currentList({title:res.title, id: res._id})
+          {/*this.props.currentList({title:res.title, id: res._id})*/}
           browserHistory.push('/items/'+res._id)
         }}
         key={i}
@@ -75,17 +83,22 @@ export default class SavedLists extends Component {
 
     return (
       <List>
-        <ListItem
+        <Paper zDepth={1} style={{marginBottom:'15px'}}>
+          <ListItem
           primaryText="My Lists"
           initiallyOpen
           primaryTogglesNestedList
           nestedItems={arr}
-        /><ListItem
-          primaryText="Shared Lists"
-          initiallyOpen
-          primaryTogglesNestedList
-          nestedItems={arr2}
-        />
+          />
+        </Paper>
+        <Paper zDepth={1} >
+          <ListItem
+            primaryText="Shared Lists"
+            initiallyOpen
+            primaryTogglesNestedList
+            nestedItems={arr2}
+          />
+        </Paper>
       </List>
     )
   }

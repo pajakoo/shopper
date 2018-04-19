@@ -4,12 +4,22 @@ import RaisedButton from 'material-ui/RaisedButton'
 import {baseUrl, getPromiseData} from '../../utils/Utils'
 import { ValidatorForm } from 'react-form-validator-core'
 import { TextValidator } from 'react-material-ui-form-validator'
+import Paper from 'material-ui/Paper'
+
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { actionCreators as friendsActions, selector } from '../friends/'
+
+@connect(selector, (dispatch) => ({
+  actions: bindActionCreators(friendsActions, dispatch)
+}))
 
 export default class Sharing extends Component {
-  /*static propTypes = {
+
+  static propTypes = {
     actions: PropTypes.object.isRequired,
-    friends: PropTypes.array.isRequired
-  }*/
+    friends: PropTypes.object.isRequired
+  }
 
   constructor(props) {
     super(props)
@@ -43,7 +53,7 @@ export default class Sharing extends Component {
   render() {
     const { formData, submitted } = this.state
     return (
-      <div>
+      <div className="content-container">
         <ValidatorForm
           onSubmit={this.handleSubmit}
           instantValidate={false}
@@ -90,33 +100,34 @@ export default class Sharing extends Component {
           }}
           label="Add"
         />
-        <List>
-          {
-            this.state.friends.map((res, i) => {
-              return (<ListItem
-                key={i}
-                primaryText={res.name}
-                onClick={ () => {
-                  var token = localStorage.getItem('token')
-                  console.log(res.name, res._id, this.props.params.list_id)
-                  fetch(baseUrl+'/api/share/',{
-                    method: 'put',
-                    body: JSON.stringify({friendId: res._id, listId: this.props.params.list_id }),
-                    headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json', 'x-access-token': token,
-                    }}).
-                  then( (x) =>  x.json() ).
-                  then( (res) => {
-                    console.log('gg: ', res)
-                  }).
-                  catch((err) => console.log('fetf: ', err))
-                }}
-              />)
-            })
-          }
-        </List>
+        <Paper zDepth={1} >
+            <List>
+            {
+              this.state.friends.map((res, i) => {
+                return (<ListItem
+                  key={i}
+                  primaryText={res.name}
+                  onClick={ () => {
 
+                    var token = localStorage.getItem('token')
+                    fetch(baseUrl+'/api/share/',{
+                      method: 'put',
+                      body: JSON.stringify({friendId: res._id, listId: this.props.friends.currentList.id }), //this.props.params.list_id }),
+                      headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json', 'x-access-token': token,
+                      }}).
+                    then( (x) =>  x.json() ).
+                    then( (res) => {
+                      console.log('gg: ', res)
+                    }).catch( (err) => console.log('fetf: ', err) )
+
+                  }}
+                />)
+              })
+            }
+          </List>
+        </Paper>
       </div>
     )
   }

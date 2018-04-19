@@ -3,8 +3,9 @@
  */
 var api = {
 
-  baseUrl: 'https://shopper.openode.io',
-  //baseUrl: 'http://10.10.0.119:8080',
+  //baseUrl: 'http://10.10.0.160:8080',
+  //baseUrl: 'https://shopper.openode.io',
+  baseUrl: 'http://10.10.5.18:8080',
   //baseUrl: 'http://87.126.166.28:8080',
 
   getPromiseData( x ){

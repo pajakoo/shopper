@@ -3,6 +3,7 @@ import {List, ListItem} from 'material-ui/List'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import {baseUrl} from '../../utils/Utils'
+import {browserHistory} from 'react-router'
 
 export default class Users extends React.Component {
 
@@ -47,7 +48,7 @@ export default class Users extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="content-container">
         <List>
           {
             this.state.users.map((res, i) => {
@@ -56,6 +57,7 @@ export default class Users extends React.Component {
                 primaryText={res.name}
                 onClick={ () => {
                   localStorage.setItem('token', res.token)
+                  browserHistory.push('/lists/')
                 }}
               />)
             })

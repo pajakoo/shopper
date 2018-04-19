@@ -1,4 +1,4 @@
-npm view react-native-fbsdk versions
+npm view react-native-fbsdk versions | more
 
 
 "react-native-drawer-layout-polyfill": "^1.3.2",
@@ -8,3 +8,19 @@ npm view react-native-fbsdk versions
     "react-native-popup-menu": "^0.8.3",
     "react-native-vector-icons": "^4.4.0",
     "react-navigation": "^1.0.0-beta.11"
+
+ANDROID
+"react-native-fbsdk": "^0.5.1"
+
+IOS
+"react-native-fbsdk": "^0.3.0"  -  to be able to build successfully
+build on device
+react-native run-ios --device
+
+sudo npm install --global --unsafe-perm ios-deploy
+
+
+
+
+axios interceptor
+http://gitlab.novarto.com/radoslav.smilyanov/basf-configurator-webapp/blob/master/src/main/configurator/src/main.js

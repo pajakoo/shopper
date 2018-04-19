@@ -7,6 +7,7 @@
  *
  *  Kill mongo instance and delete diagnostic data !!!!
  rm -f  /var/lib/mongo/diagnostic.data/*
+ mongod --dbpath=/data --port 27017
 
  */
 

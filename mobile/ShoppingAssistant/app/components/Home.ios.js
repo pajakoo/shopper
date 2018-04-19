@@ -124,7 +124,7 @@ export default class Home extends Component {
                       <MenuOption value="rename" disabled={true} text='Rename'/>
                       <MenuOption value="time_reminder" text='Time reminder'/>
                       <MenuOption onSelect={() => navigate('Map')} value="location_remainder" text='Location remainder'/>
-                      <MenuOption value="sign_out" text='Sign out'/>
+                      <MenuOption onSelect={() => navigate('Login')}value="sign_out" text='Sign out'/>
                     </MenuOptions>
                   </Menu>
                 }

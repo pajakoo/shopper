@@ -51,6 +51,12 @@ const initialState: State = {
   ]
 }
 
+
+
+
+
+
+
 // Reducer
 
 /**
@@ -67,8 +73,15 @@ const initialState: State = {
 
 export default function reducer(state: State = initialState, action: any = {}): State {
   switch (action.type) {
+
     case SELECT_LIST: {
-      return []
+      return {
+        ...state,
+        currentList: {
+          id: action.id,
+          name: action.name
+        }
+      }
     }
 
     case ADD_FRIEND: {
@@ -124,6 +137,12 @@ export default function reducer(state: State = initialState, action: any = {}): 
   }
 }
 
+
+
+
+
+
+
 // Action Creators
 
 function addFriend(name: string) {
@@ -151,6 +170,14 @@ function starFriend(id: number) {
   return {
     type: STAR_FRIEND,
     id
+  }
+}
+
+function selectList(id: string, name:string) {
+  return {
+    type: SELECT_LIST,
+    id,
+    name
   }
 }
 
@@ -182,7 +209,6 @@ function updateListCoords(coords: Object) {
 }
 
 // Selectors
-
 const friends = (state) => state[NAME];
 
 export const selector = createStructuredSelector({
@@ -190,6 +216,7 @@ export const selector = createStructuredSelector({
 });
 
 export const actionCreators = {
+  selectList,
   addFriend,
   deleteFriend,
   starFriend,

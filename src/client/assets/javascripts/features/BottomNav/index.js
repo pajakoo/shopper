@@ -95,7 +95,10 @@ export default class BottomNav extends React.Component {
           <BottomNavigationItem
             label="Add"
             icon={edit}
-            onClick={() => this.select(0)}
+            onClick={ () => {
+              this.select(0)
+              browserHistory.push('/items/'+this.props.currentListId)
+            } }
           />
           <BottomNavigationItem
             label="Share"

@@ -124,6 +124,10 @@ export default class Sidebar extends React.Component {
             }}>Users</ListItem>
 
             <Divider />
+            <ListItem onClick={() => {
+              browserHistory.push('/lists/')
+              this.handleToggle()
+            }}> Saved lists </ListItem>
             <ListItem
               leftIcon={<ContentAdd />}
               onClick={ () => {
@@ -131,11 +135,11 @@ export default class Sidebar extends React.Component {
                   this.props.handleOpen(DIALOG_TYPES.CREATE)
                 }
               }>Create New List</ListItem>
-            <SavedLists
+            {/*<SavedLists
               currentList={this.props.currentList}
               ref={(sidebar) => {
                 this.sidebar = sidebar
-              }}/>
+              }}/>*/}
 
             <Divider />
           </Drawer>

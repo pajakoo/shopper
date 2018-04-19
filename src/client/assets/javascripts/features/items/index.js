@@ -1,4 +1,4 @@
-import React from 'react'
+import React ,{PropTypes} from 'react'
 import {TextField, Checkbox, List, ListItem, IconButton} from 'material-ui'
 import Delete from 'material-ui/svg-icons/action/delete'
 import {baseUrl, getPromiseData} from '../../utils/Utils'
@@ -48,7 +48,20 @@ class CheckBox extends React.Component {
   }
 }
 
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { actionCreators as friendsActions, selector } from '../friends/'
+
+@connect(selector, (dispatch) => ({
+  actions: bindActionCreators(friendsActions, dispatch)
+}))
+
 export default class Items extends React.Component {
+
+  static propTypes = {
+    actions: PropTypes.object.isRequired,
+    friends: PropTypes.object.isRequired
+  }
 
   constructor(props) {
     super(props)
@@ -80,8 +93,8 @@ export default class Items extends React.Component {
   }
 
   loadItems() {
-
-    let items = [fetch(baseUrl + '/api/items/' + this.props.params.list_id,{
+    console.log('currentList id:', this.props.friends.currentList.id)
+    let items = [fetch(baseUrl + '/api/items/' + this.props.friends.currentList.id,{ //this.props.params.list_id,{
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json', 'x-access-token': this.state.token
@@ -98,7 +111,7 @@ export default class Items extends React.Component {
   render() {
     return (
       <div style={{flex: 1, padding: 10}}>
-        <div>
+        <div className="content-container">
           <List>
             {
               this.state.items.map((res, i) =>

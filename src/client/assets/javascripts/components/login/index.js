@@ -12,8 +12,8 @@ import * as firebase from 'firebase'
 export default class Login extends Component {
 
   state = {
-    user_email: '',
-    user_password: '',
+    userEmail: '',
+    userPassword: '',
     open: false,
     fireBaseTest:0,
     messages:{
@@ -52,7 +52,7 @@ export default class Login extends Component {
 
   handleClose = () => {
 
-    if (!this.state.user_email || !this.state.user_password) {
+    if (!this.state.userEmail || !this.state.userPassword) {
       let messages = {...this.state.messages}
       messages.modalOpen = true
       messages.message = 'Fill all the fields'
@@ -62,24 +62,21 @@ export default class Login extends Component {
     }
 
     var ctx = this
-    firebase.auth().signInWithEmailAndPassword(this.state.user_email, this.state.user_password)
+    firebase.auth().signInWithEmailAndPassword(this.state.userEmail, this.state.userPassword)
       .then((res) => {
         console.log('Logged: ',res)
         browserHistory.push('/users')
       })
       .catch(function(error) {
-        console.log('errRRRRRR 2 ')
-
         if(error.code != ''){
           let messages = {...ctx.state.messages}
           messages.modalOpen = true
           messages.message = error.code + ': '+ error.message
           ctx.setState({messages})
-
         }
     })
 
-    /*firebase.auth().createUserWithEmailAndPassword(this.state.user_email, this.state.user_password).catch(function(error) {
+    /*firebase.auth().createUserWithEmailAndPassword(this.state.userEmail, this.state.userPassword).catch(function(error) {
       var errorCode = error.code
       var errorMessage = error.message
 
@@ -174,13 +171,13 @@ export default class Login extends Component {
           onRequestClose={() => {}}
         >
           <TextField
-            onChange={ ( e ) => this.setState({'user_email': e.target.value}) }
+            onChange={ ( e ) => this.setState({'userEmail': e.target.value}) }
             hintText="Enter е-mail address"
             fullWidth={true}
             floatingLabelText="E-mail address"
           />
           <TextField
-            onChange={ ( e ) => this.setState({'user_password': e.target.value}) }
+            onChange={ ( e ) => this.setState({'userPassword': e.target.value}) }
             type="password"
             hintText="Enter password"
             fullWidth={true}

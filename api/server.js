@@ -11,7 +11,7 @@
 
  */
 
-// call the packages we need
+// call the packages we need for https
 /*var fs = require('fs')
 var https = require('https')*/
 var express    = require('express')

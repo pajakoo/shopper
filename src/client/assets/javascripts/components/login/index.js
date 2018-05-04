@@ -1,25 +1,97 @@
 import React, { Component } from 'react'
+import Snackbar from 'material-ui/Snackbar'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
 import FontIcon from 'material-ui/FontIcon'
 import {browserHistory} from 'react-router'
 import { FacebookLogin } from '../../features/fb/index'
 import {baseUrl} from '../../utils/Utils'
+import * as firebase from 'firebase'
 
 export default class Login extends Component {
 
   state = {
+    user_email: '',
+    user_password: '',
     open: false,
+    fireBaseTest:0,
+    messages:{
+      modalOpen:false,
+      message:'',
+      action:'',
+      autoHideDuration:4000
+    }
+  }
+
+  componentDidMount(){
+
+    let config = {
+      apiKey: "AIzaSyBYcnxnIrA5g4CttyTHvkabia2zaLnG6so",
+      authDomain: "shopper-cd078.firebaseapp.com",
+      databaseURL: "https://shopper-cd078.firebaseio.com",
+      projectId: "shopper-cd078",
+      storageBucket: "shopper-cd078.appspot.com",
+      messagingSenderId: "414753763111"
+    }
+    firebase.initializeApp(config)
+
+    const rootRef = firebase.database().ref().child('object')
+    rootRef.on('value', (snap) => {
+      this.setState({
+        'fireBaseTest': snap.val()
+      })
+      console.log('here you go: ', this.state.fireBaseTest)
+    })
+
   }
 
   handleOpen = () => {
-    this.setState({open: true})
+    //this.setState({open: true})
   }
 
   handleClose = () => {
-    this.setState({open: false})
+
+    if (!this.state.user_email || !this.state.user_password) {
+      let messages = {...this.state.messages}
+      messages.modalOpen = true
+      messages.message = 'Fill all the fields'
+
+      this.setState({messages})
+        return
+    }
+
+    var ctx = this
+    firebase.auth().signInWithEmailAndPassword(this.state.user_email, this.state.user_password)
+      .then((res) => {
+        console.log('Logged: ',res)
+        browserHistory.push('/users')
+      })
+      .catch(function(error) {
+        console.log('errRRRRRR 2 ')
+
+        if(error.code != ''){
+          let messages = {...ctx.state.messages}
+          messages.modalOpen = true
+          messages.message = error.code + ': '+ error.message
+          ctx.setState({messages})
+
+        }
+    })
+
+    /*firebase.auth().createUserWithEmailAndPassword(this.state.user_email, this.state.user_password).catch(function(error) {
+      var errorCode = error.code
+      var errorMessage = error.message
+
+      if (errorCode == 'auth/weak-password') {
+        console.log('The password is too weak.')
+      } else {
+        console.log(errorMessage)
+      }
+
+    })*/
+
+    // this.setState({open: false})
   }
 
   responseFacebook (response) {
@@ -89,7 +161,7 @@ export default class Login extends Component {
 
     return (
       <div>
-        <RaisedButton label="Dialog" onTouchTap={this.handleOpen} />
+        {/*<RaisedButton label="Dialog" onTouchTap={this.handleOpen} />*/}
         <Dialog
           ignoreBackdropClick={true}
           title="Shopper APP"
@@ -99,14 +171,16 @@ export default class Login extends Component {
           modal={false}
           open={true}
           // open={this.state.open}
-          onRequestClose={this.handleClose}
+          onRequestClose={() => {}}
         >
           <TextField
+            onChange={ ( e ) => this.setState({'user_email': e.target.value}) }
             hintText="Enter е-mail address"
             fullWidth={true}
             floatingLabelText="E-mail address"
           />
           <TextField
+            onChange={ ( e ) => this.setState({'user_password': e.target.value}) }
             type="password"
             hintText="Enter password"
             fullWidth={true}
@@ -114,20 +188,13 @@ export default class Login extends Component {
           />
 
         </Dialog>
+        <Snackbar
+          open={this.state.messages.modalOpen}
+          message={this.state.messages.message}
+          action="error"
+          autoHideDuration={this.state.messages.autoHideDuration}
+        />
       </div>
     )
   }
 }
-
-
-
-/*
-
-<FlatButton
-  style={{'width':'100%', backgroundColor:'#3b5998', color:'white'}}
-  label="Facebook LOGIN"
-  primary={true}
-  icon={<FontIcon className="fa fa-facebook" />}
-  onTouchTap={this.handleClose}
-  onClick={ () => browserHistory.push('/fb-login') }
-/>,*/

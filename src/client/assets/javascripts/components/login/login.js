@@ -6,7 +6,7 @@ import {
 	signIn,
 	createEmailPassword,
 	passwordUpdate
-	} from '../../utils/Utils'
+	} from 'firebase' //'../../utils/Utils'
 import LoginForm from './loginForm'
 import SignUpForm from './signUpForm'
 import ForgotForm from './forgotForm'
@@ -45,7 +45,8 @@ class Login extends Component {
 	componentWillUnmount () {
 		this.removeListener()
 	}
-    handleLogin = (e) => {
+
+	handleLogin = (e) => {
 		e.preventDefault()
 		this.setState({loading: true})
 		this.setState({loginMsg: null})

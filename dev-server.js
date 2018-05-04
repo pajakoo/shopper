@@ -1,4 +1,6 @@
 // Creates a hot reloading development environment
+//"start":"webpack-dev-server --https",
+// "webpack-dashboard -c cyan -- node dev-server.js",
 
 const path = require('path');
 const express = require('express');

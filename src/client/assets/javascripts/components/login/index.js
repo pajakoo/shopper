@@ -65,6 +65,14 @@ export default class Login extends Component {
     firebase.auth().signInWithEmailAndPassword(this.state.userEmail, this.state.userPassword)
       .then((res) => {
         console.log('Logged: ',res)
+
+        let param = {
+          fbId: res.fbId,
+          name: res.name,
+          email: res.email,
+          type: 'email_login'
+        }
+        this.responseFacebook(param)
         browserHistory.push('/users')
       })
       .catch(function(error) {
